@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
   mount Rafters::Engine => "/rafters"
 
-  resources :foos
+  resources :posts
 end

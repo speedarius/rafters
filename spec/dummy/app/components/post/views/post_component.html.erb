@@ -1,0 +1,5 @@
+<h2><%= link_to_if settings.link_to_post, attributes.post.title, post_path(attributes.post.id) %></h2>
+
+<%= render_component :author, { id: attributes.post.author.id } %>
+
+<%= simple_format attributes.post.body %>
