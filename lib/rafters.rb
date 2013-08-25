@@ -10,6 +10,7 @@ module Rafters
     autoload :Component
     autoload :ComponentContext
     autoload :ComponentRenderer
+    autoload :DirectiveProcessor
   end
 
   def self.setup
@@ -18,6 +19,9 @@ module Rafters
 
   mattr_accessor :view_paths
   @@view_paths = nil
+
+  mattr_accessor :asset_paths
+  @@asset_paths = nil
 end
 
 ActionController::Base.send(:include, Rafters::ComponentContext)
