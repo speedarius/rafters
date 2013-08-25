@@ -23,6 +23,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.1"
   spec.add_development_dependency "rspec-rails", "~> 2.14"
 
-  spec.add_dependency "rails", "~> 4.0.0"
+  spec.add_dependency "rails", "> 3.2"
   spec.add_dependency "hashie", "~> 2.0.5"
 end
