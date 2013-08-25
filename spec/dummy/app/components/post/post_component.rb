@@ -2,7 +2,7 @@ class PostComponent
   include Rafters::Component
 
   # Settings
-  setting :post, required: true
+  setting :post
   setting :link_to_post, accepts: [true, false], default: false
 
   # Attributes
@@ -11,6 +11,6 @@ class PostComponent
   private
 
   def post
-    @post ||= settings.post
+    @post ||= (settings.post || current(:post))
   end
 end

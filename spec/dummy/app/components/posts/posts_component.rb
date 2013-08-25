@@ -6,6 +6,6 @@ class PostsComponent
   private
 
   def posts
-    @posts ||= Post.all
+    @posts ||= current(:posts)
   end
 end
