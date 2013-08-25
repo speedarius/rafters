@@ -1,0 +1,70 @@
+module Rafters::Component
+  extend ActiveSupport::Concern
+
+  attr_writer :controller
+
+  def initialize(settings = {})
+    @settings = settings
+  end
+
+  def template_name
+    return @_template_name if @_template_name
+
+    _template_name = self.class._template_name
+    _underscored_name = self.class.name.underscore
+    
+    if _template_name.is_a?(Proc)
+      _template_name = _template_name.call(self)
+    end
+
+    @_template_name = (_template_name || _underscored_name)
+  end
+
+  def attributes
+    @_attributes ||= Hashie::Mash.new.tap do |_attributes|
+      self.class._attributes.each do |name, options|
+        _attributes[name] = send(name)
+      end
+    end
+  end
+
+  def settings
+    @_settings ||= Hashie::Mash.new.tap do |_settings|
+      self.class._settings.each do |name, options|
+        _settings[name] = (@settings[name] || options[:default] || nil)
+        raise SettingRequired if options[:required] && _settings[name].nil?
+      end
+    end
+  end
+
+  def current(variable_or_method_name)
+    if @controller.instance_variable_defined?("@#{variable_or_method_name}")
+      @controller.instance_variable_get("@#{variable_or_method_name}")
+    elsif @controller.respond_to?(variable_or_method_name)
+      @controller.send(variable_or_method_name)
+    else
+      raise CurrentVariableOrMethodNameMissing
+    end
+  end
+
+  module ClassMethods
+    attr_accessor :_attributes, :_settings, :_template_name
+
+    def attribute(name, options = {})
+      self._attributes ||= {}
+      self._attributes[name.to_sym] = options
+    end
+
+    def setting(name, options = {})
+      self._settings ||= {}
+      self._settings[name.to_sym] = options
+    end
+
+    def template_name(name)
+      self._template_name = name.to_s
+    end
+  end
+
+  class CurrentVariableOrMethodNameMissing < StandardError; end
+  class SettingRequired < StandardError; end
+end
