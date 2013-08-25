@@ -58,7 +58,7 @@ describe Rafters::Component do
     subject { HeadingComponent.new }
 
     it "returns the registered attributes and their values" do
-      subject.attributes.should == Hashie::Mash.new({ title: "Lorem Ipsum" })
+      subject.attributes.should == Hashie::Mash.new({ title: "Lorem Ipsum", settings: {} })
     end
   end
 
