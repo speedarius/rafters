@@ -62,6 +62,10 @@ module Rafters::Component
       self._attributes << name
     end
 
+    def attributes(*names)
+      names.each { |name| attribute(name) }
+    end
+
     def setting(name, options = {})
       self._settings ||= {}
       self._settings[name.to_sym] = options
