@@ -189,13 +189,19 @@ end
 Default values can be provided for settings using the `default` option:
     
 ```ruby
-setting :type, default: "Comment"
+setting :type, default: "comment"
 ```
   
 Required settings can be specified using the `required` option:
 
 ```ruby
 setting :user_id, required: true
+```
+
+If you want to restrict the possible values of a setting to a known list, use the `accepts` option:
+
+```ruby
+setting :type, accepts: %w(post reply comment)
 ```
 
 ## Contributing

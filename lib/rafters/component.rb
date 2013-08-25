@@ -39,7 +39,14 @@ module Rafters::Component
     @_settings ||= Hashie::Mash.new.tap do |_settings|
       self.class._settings.each do |name, options|
         _settings[name] = (@settings[name] || options[:default] || nil)
-        raise SettingRequired if options[:required] && _settings[name].nil?
+
+        if options[:required] && _settings[name].nil?
+          raise SettingRequired, "#{name} is required but not provided"
+        end
+
+        if options[:accepts] && !options[:accepts].include?(_settings[name])
+          raise InvalidSetting, "#{_settings[name].to_s} is not a valid value for #{name}. Accepts: #{options[:accepts].join(',')}"
+        end
       end
     end
   end
@@ -50,7 +57,7 @@ module Rafters::Component
     elsif @controller.respond_to?(variable_or_method_name, true)
       @controller.send(variable_or_method_name)
     else
-      raise CurrentVariableOrMethodNameMissing
+      raise CurrentMissing, "#{variable_or_method_name.to_s} not found in #{@controller.class.name}"
     end
   end
 
@@ -76,6 +83,7 @@ module Rafters::Component
     end
   end
 
-  class CurrentVariableOrMethodNameMissing < StandardError; end
+  class CurrentMissing < StandardError; end
   class SettingRequired < StandardError; end
+  class InvalidSetting < StandardError; end
 end

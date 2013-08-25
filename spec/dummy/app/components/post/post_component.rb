@@ -3,7 +3,7 @@ class PostComponent
 
   # Settings
   setting :post, required: true
-  setting :link_to_post, default: false
+  setting :link_to_post, accepts: [true, false], default: false
 
   # Attributes
   attribute :post
