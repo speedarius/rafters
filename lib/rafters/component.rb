@@ -40,7 +40,7 @@ module Rafters::Component
   def current(variable_or_method_name)
     if @controller.instance_variable_defined?("@#{variable_or_method_name}")
       @controller.instance_variable_get("@#{variable_or_method_name}")
-    elsif @controller.respond_to?(variable_or_method_name)
+    elsif @controller.respond_to?(variable_or_method_name, true)
       @controller.send(variable_or_method_name)
     else
       raise CurrentVariableOrMethodNameMissing
