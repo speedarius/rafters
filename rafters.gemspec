@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Rafters::VERSION
   spec.authors       = ["Andrew Hite"]
   spec.email         = ["andrew@andrew-hite.com"]
-  spec.description   = %q{Put your app on Rafters!}
-  spec.summary       = %q{Put your app on Rafters!}
+  spec.description   = %q{Rafters lets you think about each page of your application as a collection of small pieces instead of monolithic, difficult to maintain views.}
+  spec.summary       = %q{Rafters lets you think about each page of your application as a collection of small pieces instead of monolithic, difficult to maintain views.}
   spec.homepage      = ""
   spec.license       = "MIT"
 
