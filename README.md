@@ -2,6 +2,8 @@
 
 !!! STILL UNDER ACTIVE DEVELOPMENT. USE AT YOUR OWN RISK !!!
 
+[![Build Status](https://travis-ci.org/andyhite/rafters.png?branch=master)](https://travis-ci.org/andyhite/rafters)
+
 Rafters lets you think about each page of your application as a collection of small pieces instead of monolithic, difficult to maintain
 views.
 
