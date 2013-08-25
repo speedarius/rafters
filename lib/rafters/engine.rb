@@ -1,3 +1,5 @@
+require 'sprockets/component_processor'
+
 class Rafters::Engine < Rails::Engine
   isolate_namespace Rafters
 
@@ -24,10 +26,18 @@ class Rafters::Engine < Rails::Engine
   end
 
   config.after_initialize do |app|
-    app.assets.unregister_preprocessor('text/css', Sprockets::DirectiveProcessor)
-    app.assets.register_preprocessor('text/css', Sprockets::ComponentProcessor)
+    begin
+      app.assets.unregister_preprocessor('text/css', Sprockets::DirectiveProcessor)
+      app.assets.register_preprocessor('text/css', Sprockets::ComponentProcessor)
+    rescue
+      Rails.logger.warn("Could not load Sprockets::ComponentProcessor for text/css")
+    end
 
-    app.assets.unregister_preprocessor('application/javascript', Sprockets::DirectiveProcessor)
-    app.assets.register_preprocessor('application/javascript', Sprockets::ComponentProcessor)
+    begin
+      app.assets.unregister_preprocessor('application/javascript', Sprockets::DirectiveProcessor)
+      app.assets.register_preprocessor('application/javascript', Sprockets::ComponentProcessor)
+    rescue
+      Rails.logger.warn("Could not load Sprockets::ComponentProcessor for application/javascript")
+    end
   end
 end

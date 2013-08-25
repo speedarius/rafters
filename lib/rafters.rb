@@ -1,8 +1,6 @@
 require 'active_support'
 require 'hashie'
 
-require 'sprockets/component_processor'
-
 require 'rafters/engine'
 
 module Rafters
