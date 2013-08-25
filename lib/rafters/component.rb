@@ -21,6 +21,8 @@ module Rafters::Component
   end
 
   def attributes
+    return {} if self.class._attributes.nil?
+
     @_attributes ||= Hashie::Mash.new.tap do |_attributes|
       self.class._attributes.each do |name, options|
         _attributes[name] = send(name)
@@ -29,6 +31,8 @@ module Rafters::Component
   end
 
   def settings
+    return {} if self.class._settings.nil?
+
     @_settings ||= Hashie::Mash.new.tap do |_settings|
       self.class._settings.each do |name, options|
         _settings[name] = (@settings[name] || options[:default] || nil)
