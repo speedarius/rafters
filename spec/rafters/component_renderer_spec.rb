@@ -6,7 +6,7 @@ describe Rafters::ComponentRenderer do
 
   describe "when initialized" do
     before do
-      Rafters.view_paths = ["/path/to/views"]
+      Rafters.stub(:view_paths).and_return(["/path/to/views"])
     end
 
     it "should add the view paths for all components to the controller" do
