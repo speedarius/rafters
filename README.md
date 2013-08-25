@@ -73,7 +73,7 @@ You can render components anywhere - in your view, in your controller, in anothe
 
 ### Adding an attribute to a component
 
-Each component exposes attributes to it's view using `Rafters::Component#attributes`, which are available in the view under the local variable `attributes`. The `attributes` are simply a collection of methods that you explicitly declare as such in your component, using the `Rafters::Component.attribute` method.
+Each component exposes `attributes` to it's view as locals. The `attributes` are simply a collection of methods that you explicitly declare as `attributes` in your component, using the `Rafters::Component.attribute` method.
 
 For instance, let's say we have a HeadingComponent that exposes a title attribute:
 
@@ -93,11 +93,11 @@ end
   
 Since we won't be accessing the `HeadingComponent#title` method directly from within our view, it's recommended to make it a private method. The interface that our component exposes is taken care of behind the scenes.
 
-You can access the attribute in your component view using the `attributes` object:
+You can access the method in your component view using the name of the attribute:
 
 ```erb
 <div class="heading">
-  <h1><%= attributes.title %></h1>  
+  <h1><%= title %></h1>  
 </div>
 ```
 
