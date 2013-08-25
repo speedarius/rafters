@@ -38,15 +38,7 @@ module Rafters::Component
 
     @_settings ||= Hashie::Mash.new.tap do |_settings|
       self.class._settings.each do |name, options|
-        _settings[name] = (@settings[name] || options[:default] || nil)
-
-        if options[:required] && _settings[name].nil?
-          raise SettingRequired, "#{name} is required but not provided"
-        end
-
-        if options[:accepts] && !options[:accepts].include?(_settings[name])
-          raise InvalidSetting, "#{_settings[name].to_s} is not a valid value for #{name}. Accepts: #{options[:accepts].join(',')}"
-        end
+        _settings[name] = value_for_setting(name, options)
       end
     end
   end
@@ -59,6 +51,28 @@ module Rafters::Component
     else
       raise CurrentMissing, "#{variable_or_method_name.to_s} not found in #{@controller.class.name}"
     end
+  end
+
+  private
+
+  def value_for_setting(name, options)
+    value = @settings.has_key?(name) ? @settings[name] : options[:default]
+    validate_setting(name, value, options) && value
+  end
+
+  def validate_setting(name, value, options)
+    validate_setting_required(name, value, options[:required])
+    validate_setting_accepts(name, value, options[:accepts])
+  end
+
+  def validate_setting_required(name, value, required)
+    return true unless !!required
+    raise SettingRequired, "#{name} is required but not provided" if value.nil?
+  end
+
+  def validate_setting_accepts(name, value, accepts)
+    return true unless !!accepts
+    raise InvalidSetting, "#{value} is not a valid value for #{name}. Accepts: #{accepts.join(', ')}" unless accepts.include?(value)
   end
 
   module ClassMethods
