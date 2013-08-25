@@ -1,6 +1,8 @@
 require 'active_support'
 require 'hashie'
 
+require 'sprockets/component_processor'
+
 require 'rafters/engine'
 
 module Rafters
@@ -10,7 +12,6 @@ module Rafters
     autoload :Component
     autoload :ComponentContext
     autoload :ComponentRenderer
-    autoload :DirectiveProcessor
   end
 
   def self.setup

@@ -25,9 +25,9 @@ class Rafters::Engine < Rails::Engine
 
   config.after_initialize do |app|
     app.assets.unregister_preprocessor('text/css', Sprockets::DirectiveProcessor)
-    app.assets.register_preprocessor('text/css', Rafters::DirectiveProcessor)
+    app.assets.register_preprocessor('text/css', Sprockets::ComponentProcessor)
 
     app.assets.unregister_preprocessor('application/javascript', Sprockets::DirectiveProcessor)
-    app.assets.register_preprocessor('application/javascript', Rafters::DirectiveProcessor)
+    app.assets.register_preprocessor('application/javascript', Sprockets::ComponentProcessor)
   end
 end
