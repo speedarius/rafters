@@ -12,13 +12,9 @@ module Rafters::Component
   end
 
   def template_name
-    @template_name ||= begin
+    @_template_name ||= begin
       _template_name = (self.class._template_name || self.class.name.underscore)
-      
-      if _template_name.is_a?(Proc)
-        _template_name = _template_name.call(self)
-      end
-
+      _template_name = _template_name.call(self) if _template_name.is_a?(Proc)
       _template_name
     end
   end
