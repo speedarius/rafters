@@ -27,7 +27,7 @@ module Rafters::Component
     return {} if self.class._attributes.nil?
 
     @_attributes ||= Hashie::Mash.new.tap do |_attributes|
-      self.class._attributes.each do |name, options|
+      self.class._attributes.each do |name|
         _attributes[name] = send(name)
       end
     end
@@ -57,9 +57,9 @@ module Rafters::Component
   module ClassMethods
     attr_accessor :_attributes, :_settings, :_template_name
 
-    def attribute(name, options = {})
-      self._attributes ||= {}
-      self._attributes[name.to_sym] = options
+    def attribute(name)
+      self._attributes ||= []
+      self._attributes << name
     end
 
     def setting(name, options = {})
