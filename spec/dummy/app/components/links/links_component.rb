@@ -1,6 +1,7 @@
 class LinksComponent
   include Rafters::Component
 
+  # Attributes
   attribute :links
 
   private

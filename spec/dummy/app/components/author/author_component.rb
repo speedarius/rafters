@@ -1,9 +1,11 @@
 class AuthorComponent
   include Rafters::Component
 
-  attribute :author
+  # Settings
+  setting :id, required: true
 
-  setting :id
+  # Attributes
+  attribute :author
 
   private
 

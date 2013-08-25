@@ -3,6 +3,10 @@ module Rafters::Component
 
   attr_writer :controller
 
+  included do
+    attribute :settings
+  end
+
   def initialize(settings = {})
     @settings = settings
   end

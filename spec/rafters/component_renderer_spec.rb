@@ -19,23 +19,17 @@ describe Rafters::ComponentRenderer do
     subject { Rafters::ComponentRenderer.new(controller) }
 
     let(:component) do
-      double("Component", settings: { test: true }, attributes: { title: "Foo" }, :'controller=' => true, template_name: "template")
+      double("Component", attributes: { title: "Foo" }, :'controller=' => true, template_name: "template")
     end
 
     it "renders the component template with it's settings and attributes" do
-      view_context.should_receive(:render).with(file: "/template", locals: {
-        settings: { test: true },
-        attributes: { title: "Foo" }
-      })
+      view_context.should_receive(:render).with(file: "/template", locals: { title: "Foo" })
       subject.render(component)
     end
 
     context "with a specified template name" do
       it "renders the component with the specified template" do
-        view_context.should_receive(:render).with(file: "/custom_template", locals: {
-          settings: { test: true },
-          attributes: { title: "Foo" }
-        })
+        view_context.should_receive(:render).with(file: "/custom_template", locals: { title: "Foo" })
         subject.render(component, "custom_template")
       end
     end

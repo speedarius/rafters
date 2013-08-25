@@ -1,5 +1,5 @@
 <div class="posts">
-  <% attributes.posts.each do |post| %>
+  <% posts.each do |post| %>
     <%= render_component :post, { post: post, link_to_post: true } %>
   <% end %>
 </div>

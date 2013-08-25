@@ -1,10 +1,12 @@
 class PostComponent
   include Rafters::Component
 
-  attribute :post
+  # Settings
+  setting :post, required: true
+  setting :link_to_post, default: false
 
-  setting :post
-  setting :link_to_post
+  # Attributes
+  attribute :post
 
   private
 

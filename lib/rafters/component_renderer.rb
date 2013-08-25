@@ -12,9 +12,9 @@ class Rafters::ComponentRenderer
 
     template_name = (template_name || component.template_name)
 
-    @controller.view_context.render(file: "/#{template_name}", locals: {
-      settings: component.settings,
-      attributes: component.attributes
+    @controller.view_context.render({
+      file: "/#{template_name}", 
+      locals: component.attributes
     })
   end
 end
