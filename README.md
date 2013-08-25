@@ -98,6 +98,43 @@ You can access the attribute in your component view using the `attributes` objec
   <h1><%= attributes.title %></h1>  
 </div>
 ```
+
+### Accessing information from the controller in your components
+
+There will often be times when you need to access data in your component that is only available as an instance variable or method in your controller. Rafters provides a convenience method that lets you get to that data in a uniform way - `Rafters::Component#current`:
+
+```ruby
+class PostController
+  ...
+
+  def show
+    @post = current_user.posts.find(params[:id])
+  end
+
+  private
+
+  def current_user
+    @current_user ||= User.authenticate!(...)
+  end
+  helper_method :current_user
+end
+```
+
+```ruby
+class RelatedPostsComponent
+  ...
+  
+  def related_posts
+    @related_posts ||= current(:post).related_posts.where(author_id: current(:current_user))
+  end
+end
+```
+
+You can also access the controller's params using this method:
+
+```ruby
+current(:params)[:id]
+```
   
 ### Adding a setting to a component
 
