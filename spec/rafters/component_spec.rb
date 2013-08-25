@@ -146,7 +146,7 @@ describe Rafters::Component do
   after do
     # A little housekeeping after each spec runs, so that
     # we have fresh values for each class attribute
-    HeadingComponent._attributes = nil
+    HeadingComponent._attributes = [:settings]
     HeadingComponent._settings = nil
     HeadingComponent._template_name = nil
   end
