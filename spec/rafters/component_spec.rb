@@ -138,7 +138,7 @@ describe Rafters::Component do
 
     context "when there is neither a method nor an instance variable with the given name in the controller" do
       it "raises an error" do
-        -> { subject.current(:doesnt_exist) }.should raise_error(Rafters::Component::CurrentVariableOrMethodNameMissing)
+        -> { subject.current(:doesnt_exist) }.should raise_error(Rafters::Component::CurrentMissing)
       end
     end
   end
