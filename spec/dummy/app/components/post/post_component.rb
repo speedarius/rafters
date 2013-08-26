@@ -11,6 +11,6 @@ class PostComponent
   private
 
   def post
-    @post ||= (settings.post || current(:post))
+    @post ||= (settings.post || controller(:post))
   end
 end

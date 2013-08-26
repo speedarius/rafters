@@ -107,7 +107,7 @@ describe Rafters::Component do
     end
   end
 
-  describe "#current" do
+  describe "#controller" do
     subject { HeadingComponent.new }
 
     let(:controller) { Object.new }
@@ -122,7 +122,7 @@ describe Rafters::Component do
       end
 
       it "returns the value of the instance variable" do
-        subject.current(:foo_bar).should == "lorem ipsum"
+        subject.controller(:foo_bar).should == "lorem ipsum"
       end
     end
 
@@ -132,13 +132,13 @@ describe Rafters::Component do
       end
 
       it "returns the value of the method" do
-        subject.current(:lorem_ipsum).should == "foo bar"
+        subject.controller(:lorem_ipsum).should == "foo bar"
       end
     end
 
     context "when there is neither a method nor an instance variable with the given name in the controller" do
       it "raises an error" do
-        -> { subject.current(:doesnt_exist) }.should raise_error(Rafters::Component::CurrentMissing)
+        -> { subject.controller(:doesnt_exist) }.should raise_error(Rafters::Component::ControllerMethodOrVariableMissing)
       end
     end
   end

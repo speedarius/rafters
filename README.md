@@ -104,7 +104,7 @@ You can access the method in your component view using the name of the attribute
 
 ### Accessing information from the controller in your components
 
-There will often be times when you need to access data in your component that is only available as an instance variable or method in your controller. Rafters provides a convenience method that lets you get to that data in a uniform way - `Rafters::Component#current`:
+There will often be times when you need to access data in your component that is only available as an instance variable or method in your controller. Rafters provides a convenience method that lets you get to that data in a uniform way - `Rafters::Component#controller`:
 
 ```ruby
 class PostController
@@ -128,7 +128,7 @@ class RelatedPostsComponent
   ...
   
   def related_posts
-    @related_posts ||= current(:post).related_posts.where(author_id: current(:current_user))
+    @related_posts ||= controller(:post).related_posts.where(author_id: controller(:current_user))
   end
 end
 ```
@@ -136,7 +136,7 @@ end
 You can also access the controller's params using this method:
 
 ```ruby
-current(:params)[:id]
+controller(:params)[:id]
 ```
   
 ### Adding a setting to a component
