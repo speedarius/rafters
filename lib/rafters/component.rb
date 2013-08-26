@@ -53,7 +53,8 @@ module Rafters::Component
 
   def value_for_setting(name, options)
     value = @settings.has_key?(name) ? @settings[name] : options[:default]
-    validate_setting(name, value, options) && value
+    validate_setting(name, value, options)
+    value
   end
 
   def validate_setting(name, value, options)
