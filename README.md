@@ -74,7 +74,7 @@ You can render components anywhere - in your view, in your controller, in anothe
 
 ### Adding an attribute to a component
 
-Each component exposes `attributes` to it's view as locals. The `attributes` are simply a collection of methods that you explicitly declare as `attributes` in your component, using the `Rafters::Component.attribute` method.
+Each component exposes `attributes` to it's view as locals. The `attributes` are simply a collection of methods that you explicitly declare as `attributes` in your component, using the Rafters::Component.attribute` or `Rafters::Component.attributes` methods.
 
 For instance, let's say we have a HeadingComponent that exposes a title attribute:
 
