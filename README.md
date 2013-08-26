@@ -1,8 +1,6 @@
 # Rafters
 
-<div class="alert">
-  <p><strong>WARNING</strong>: STILL UNDER ACTIVE DEVELOPMENT. USE AT YOUR OWN RISK</p>
-</div>
+<p><strong>WARNING</strong>: STILL UNDER DEVELOPMENT. USE AT YOUR OWN RISK!</p>
 
 [![Build Status](https://travis-ci.org/andyhite/rafters.png?branch=master)](https://travis-ci.org/andyhite/rafters)
 [![Gem Version](https://badge.fury.io/rb/rafters.png)](http://badge.fury.io/rb/rafters)
