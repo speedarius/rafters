@@ -6,8 +6,6 @@ end
 
 class FooComponent
   include Rafters::Component
-
-  setting :test
 end
 
 describe Rafters::ComponentContext do

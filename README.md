@@ -139,20 +139,10 @@ You can also access the controller's params using this method:
 controller(:params)[:id]
 ```
   
-### Adding a setting to a component
+### Specifying settings for a component instance
 
-In order to build components in a way that allows for re-use, you'll want to define settings that allow individual instances of the component to be configured. These settings will likely be used throughout your component view and controller for any number of purposes, like values in query conditions, section titles, turning on or off specific features of a component, etc.
+In order to build components in a way that allows for re-use, you'll want to use settings that allow individual instances of the component to be configured. These settings will likely be used throughout your component view and controller for any number of purposes, like values in query conditions, section titles, turning on or off specific features of a component, etc.
 
-Adding a setting is very similar to adding an attribute, except they don't point at methods:
-
-```ruby
-class PostsComponent
-  include Rafters::Component
-
-  setting :published
-end
-```
-  
 Setting values are specified when rendering a component:
 
 ```erb
@@ -187,22 +177,11 @@ class PostsComponent
 end
 ```
   
-Default values can be provided for settings using the `default` option:
+Default values can be provided for settings using `Rafters::Component.defaults` and `Rafters::Component.default`:
     
 ```ruby
-setting :type, default: "comment"
-```
-  
-Required settings can be specified using the `required` option:
-
-```ruby
-setting :user_id, required: true
-```
-
-If you want to restrict the possible values of a setting to a known list, use the `accepts` option:
-
-```ruby
-setting :type, accepts: %w(post reply comment)
+defaults type: "comment", filter: "none"
+default :published, false
 ```
 
 ## Contributing

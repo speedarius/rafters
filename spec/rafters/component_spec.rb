@@ -22,30 +22,24 @@ describe Rafters::Component do
     end
   end
 
-  describe ".setting" do
-    it "adds the provided key to the component's settings" do
-      HeadingComponent.setting(:type)
+  describe ".attributes" do
+    it "adds a list of methods to the components attributes" do
+      HeadingComponent.send(:define_method, :title, -> { "Lorem Ipsum" })
+      HeadingComponent.send(:define_method, :subtitle, -> { "Dolor Sit Amet" })
+      HeadingComponent.attributes(:title, :subtitle)
 
       heading = HeadingComponent.new
-      heading.settings.should respond_to(:type)
+      heading.attributes.keys.map(&:to_sym).should include(:title)
+      heading.attributes.keys.map(&:to_sym).should include(:subtitle)
     end
+  end
 
-    context "with a :default value" do
-      it "sets the setting's value to the provided value when no value is available" do
-        HeadingComponent.setting(:type, default: "h1")
+  describe ".defaults" do
+    it "adds default values to the component settings" do
+      HeadingComponent.defaults(foo: "bar")
 
-        heading = HeadingComponent.new
-        heading.settings.type.should == "h1"
-      end
-    end
-
-    context "with the :required option" do
-      it "raises an error when accessing the settings if the value is nil" do
-        HeadingComponent.setting(:type, required: true)
-
-        heading = HeadingComponent.new
-        -> { heading.settings }.should raise_error(Rafters::Component::SettingRequired)
-      end
+      heading = HeadingComponent.new
+      heading.settings.foo.should == "bar"
     end
   end
 
@@ -63,14 +57,15 @@ describe Rafters::Component do
   end
 
   describe "#settings" do
-    before do
-      HeadingComponent.setting(:type)
-    end
-
     subject { HeadingComponent.new({ type: "h2" }) }
 
-    it "returns the registered settings and their values" do
+    it "returns the provided settings" do
       subject.settings.should == Hashie::Mash.new({ type: "h2" })
+    end
+
+    it "gives provided settings precedence over default settings" do
+      HeadingComponent.default(:type, "h1")
+      subject.settings[:type].should == "h2"
     end
   end
 
@@ -147,7 +142,7 @@ describe Rafters::Component do
     # A little housekeeping after each spec runs, so that
     # we have fresh values for each class attribute
     HeadingComponent._attributes = [:settings]
-    HeadingComponent._settings = nil
+    HeadingComponent._defaults = {}
     HeadingComponent._template_name = nil
   end
 end

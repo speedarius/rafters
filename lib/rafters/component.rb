@@ -30,13 +30,7 @@ module Rafters::Component
   end
 
   def settings
-    return {} if self.class._settings.nil?
-
-    @_settings ||= Hashie::Mash.new.tap do |_settings|
-      self.class._settings.each do |name, options|
-        _settings[name] = value_for_setting(name, options)
-      end
-    end
+    @_settings ||= Hashie::Mash.new(@settings.reverse_merge(self.class._defaults || {}))
   end
 
   def controller(variable_or_method_name)
@@ -51,29 +45,8 @@ module Rafters::Component
 
   private
 
-  def value_for_setting(name, options)
-    value = @settings.has_key?(name) ? @settings[name] : options[:default]
-    validate_setting(name, value, options)
-    value
-  end
-
-  def validate_setting(name, value, options)
-    validate_setting_required(name, value, options[:required])
-    validate_setting_accepts(name, value, options[:accepts])
-  end
-
-  def validate_setting_required(name, value, required)
-    return true unless !!required
-    raise SettingRequired, "#{name} is required but not provided" if value.nil?
-  end
-
-  def validate_setting_accepts(name, value, accepts)
-    return true unless !!accepts
-    raise InvalidSetting, "#{value} is not a valid value for #{name}. Accepts: #{accepts.join(', ')}" unless accepts.include?(value)
-  end
-
   module ClassMethods
-    attr_accessor :_attributes, :_settings, :_template_name
+    attr_accessor :_attributes, :_defaults, :_template_name
 
     def attribute(name)
       self._attributes ||= []
@@ -84,9 +57,13 @@ module Rafters::Component
       names.each { |name| attribute(name) }
     end
 
-    def setting(name, options = {})
-      self._settings ||= {}
-      self._settings[name.to_sym] = options
+    def default(name, value)
+      self._defaults ||= {}
+      self._defaults[name] = value
+    end
+
+    def defaults(settings = {})
+      settings.each { |name, value| default(name, value) }
     end
 
     def template_name(name)
