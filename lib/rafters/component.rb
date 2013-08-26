@@ -11,6 +11,14 @@ module Rafters::Component
     @settings = settings
   end
 
+  def name
+    self.class.name.underscore
+  end
+
+  def identifier
+    @identifier ||= "#{name}-#{random_identifier}"
+  end
+
   def template_name
     @_template_name ||= begin
       _template_name = (self.class._template_name || self.class.name.underscore)
@@ -43,7 +51,19 @@ module Rafters::Component
     end
   end
 
+  def as_json
+    { identifier => { "class" => self.class.name, "attributes" => attributes.as_json } }
+  end
+
   private
+
+  def random_seed
+    rand(DateTime.now.to_i).to_s
+  end
+
+  def random_identifier
+    Digest::MD5.hexdigest(random_seed)[0..6]
+  end
 
   module ClassMethods
     attr_accessor :_attributes, :_defaults, :_template_name

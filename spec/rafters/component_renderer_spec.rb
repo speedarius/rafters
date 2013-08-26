@@ -1,8 +1,14 @@
 require 'spec_helper'
 
 describe Rafters::ComponentRenderer do
-  let(:view_context) { double("ViewContext", render: "<p>Output</p>") }
-  let(:controller) { double("Controller", prepend_view_path: true, view_context: view_context) }
+  let(:view_context) { double("ViewContext").as_null_object }
+  let(:controller) { double("Controller").as_null_object }
+
+  before do
+    view_context.stub(:render).and_return("<p>Output</p>")
+    view_context.stub(:content_tag).and_yield
+    controller.stub(:view_context).and_return(view_context)
+  end
 
   describe "when initialized" do
     before do
@@ -18,8 +24,11 @@ describe Rafters::ComponentRenderer do
   describe "#render" do
     subject { Rafters::ComponentRenderer.new(controller) }
 
-    let(:component) do
-      double("Component", attributes: { title: "Foo" }, :'controller=' => true, template_name: "template")
+    let(:component) { double("Component").as_null_object }
+
+    before do
+      component.stub(:attributes).and_return({ title: "Foo" })
+      component.stub(:template_name).and_return("template")
     end
 
     it "renders the component template with it's settings and attributes" do

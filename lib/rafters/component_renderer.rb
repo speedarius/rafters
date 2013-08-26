@@ -12,9 +12,17 @@ class Rafters::ComponentRenderer
 
     template_name = (template_name || component.template_name)
 
-    @controller.view_context.render({
-      file: "/#{template_name}", 
-      locals: component.attributes
-    })
+    store(component)
+
+    @controller.view_context.content_tag(:div, class: "component", id: component.identifier) do
+      @controller.view_context.render(file: "/#{template_name}", locals: component.attributes)
+    end
+  end
+
+  private
+
+  def store(component)
+    @controller.rendered_components ||= {}
+    @controller.rendered_components.merge!(component.as_json)
   end
 end
