@@ -1,14 +1,6 @@
 require 'sprockets/component_processor'
 
-class Rafters::Engine < Rails::Engine
-  isolate_namespace Rafters
-
-  config.generators do |g|
-    g.test_framework :rspec
-    g.assets false
-    g.helper false
-  end
-
+class Rafters::Railtie < Rails::Railtie
   initializer "rafters.load_view_paths" do |app|
     Rafters.view_paths = Dir[app.root.join("app", "components", "*", "views")]
   end

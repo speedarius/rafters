@@ -1,7 +1,7 @@
 require 'active_support'
 require 'hashie'
 
-require 'rafters/engine'
+require 'rafters/railtie'
 
 module Rafters
   extend ActiveSupport::Autoload
