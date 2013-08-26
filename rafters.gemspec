@@ -25,5 +25,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "capybara", "~> 2.1"
 
   spec.add_dependency "rails", "> 3.2"
+  spec.add_dependency "sass-rails", "> 3.2"
   spec.add_dependency "hashie", "~> 2.0.5"
 end
