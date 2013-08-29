@@ -1,4 +1,4 @@
-require 'sprockets/component_processor'
+require 'rafters/directive_processor'
 
 class Rafters::Railtie < Rails::Railtie
   initializer "rafters.load_view_paths" do |app|
@@ -20,14 +20,14 @@ class Rafters::Railtie < Rails::Railtie
   config.after_initialize do |app|
     begin
       app.assets.unregister_preprocessor('text/css', Sprockets::DirectiveProcessor)
-      app.assets.register_preprocessor('text/css', Sprockets::ComponentProcessor)
+      app.assets.register_preprocessor('text/css', Rafters::DirectiveProcessor)
     rescue
       Rails.logger.warn("Could not load Sprockets::ComponentProcessor for text/css")
     end
 
     begin
       app.assets.unregister_preprocessor('application/javascript', Sprockets::DirectiveProcessor)
-      app.assets.register_preprocessor('application/javascript', Sprockets::ComponentProcessor)
+      app.assets.register_preprocessor('application/javascript', Rafters::DirectiveProcessor)
     rescue
       Rails.logger.warn("Could not load Sprockets::ComponentProcessor for application/javascript")
     end
