@@ -10,14 +10,6 @@ class Rafters::InstallGenerator < Rails::Generators::Base
   end
 
   def add_asset_requires
-    inject_into_file "app/assets/stylesheets/application.css", after: "*= require_tree .\n" do <<-'RUBY'
- *= require_components
-    RUBY
-    end
-
-    inject_into_file "app/assets/javascripts/application.js", after: "//= require_tree .\n" do <<-'RUBY'
-//= require_components
-    RUBY
-    end
+    say_status("[instructions]", "Please add //= require_components to your application.css and application.js files")
   end
 end
