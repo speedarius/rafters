@@ -28,6 +28,10 @@ module Rafters::Component
     end
   end
 
+  def source
+    @source ||= "#{name(true)}_#{settings.source}_source".camelize.constantize.new(self)
+  end
+
   def attributes
     return {} if self.class._attributes.nil?
 

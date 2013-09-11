@@ -14,6 +14,7 @@ class Rafters::Railtie < Rails::Railtie
   end
 
   initializer "rafters.set_autoload_paths", :before => :set_autoload_paths do |app|
+    app.config.autoload_paths += Dir[app.root.join("app", "components", "*", "*/")]
     app.config.autoload_paths += Dir[app.root.join("app", "components", "*/")]
   end
 

@@ -10,6 +10,7 @@ module Rafters
     autoload :Component
     autoload :ComponentContext
     autoload :ComponentRenderer
+    autoload :Source
   end
 
   def self.setup
