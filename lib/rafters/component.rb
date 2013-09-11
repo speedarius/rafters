@@ -11,8 +11,9 @@ module Rafters::Component
     @settings = settings
   end
 
-  def name
-    self.class.name.underscore
+  def name(without_postfix = false)
+    _name = self.class.name.underscore
+    without_postfix ? _name.gsub(/_component/, '') : _name
   end
 
   def identifier
@@ -31,14 +32,30 @@ module Rafters::Component
     return {} if self.class._attributes.nil?
 
     @_attributes ||= Hashie::Mash.new.tap do |_attributes|
-      self.class._attributes.each do |name|
+      (self.class._attributes || []).each do |name|
         _attributes[name] = send(name)
       end
     end
   end
 
   def settings
-    @_settings ||= Hashie::Mash.new(@settings.reverse_merge(self.class._defaults || {}))
+    @_settings ||= Hashie::Mash.new(@settings.reverse_merge(overrides).reverse_merge(defaults))
+  end
+
+  def defaults
+    @_defaults ||= Hashie::Mash.new.tap do |_defaults|
+      (self.class._defaults || {}).each do |name, value|
+        _defaults[name] = value.is_a?(Proc) ? value.call(self) : value
+      end
+    end
+  end
+
+  def overrides
+    @_overrides ||= Hashie::Mash.new.tap do |_overrides|
+      (controller(:params)[name(true)] || {}).each do |name, value|
+        _overrides[name] = value
+      end
+    end
   end
 
   def controller(variable_or_method_name)
@@ -47,7 +64,7 @@ module Rafters::Component
     elsif @controller.respond_to?(variable_or_method_name, true)
       @controller.send(variable_or_method_name)
     else
-      raise ControllerMethodOrVariableMissing, "#{variable_or_method_name.to_s} not found in #{@controller.class.name}"
+      nil
     end
   end
 
@@ -91,7 +108,6 @@ module Rafters::Component
     end
   end
 
-  class ControllerMethodOrVariableMissing < StandardError; end
   class SettingRequired < StandardError; end
   class InvalidSetting < StandardError; end
 end
