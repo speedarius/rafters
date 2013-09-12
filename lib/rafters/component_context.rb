@@ -8,23 +8,23 @@ module Rafters::ComponentContext
     alias_method_chain :render, :component
   end
 
-  def component_attributes(name, settings = {})
-    component = component(name, settings)
+  def component_attributes(name, options = {})
+    component = component(name, options)
     component.as_json
   end
 
-  def render_component(name, settings = {}, template_name = nil)
-    component = component(name, settings)
-    component_renderer.render(component, template_name)
+  def render_component(name, options = {})
+    component = component(name, options)
+    component_renderer.render(component)
   end
 
   def render_with_component(*args, &block)
     if params[:component]
-      component, settings = params[:component], params[:settings]
+      component, settings = params[:component], params[:options]
 
       respond_to do |format|
-        format.html { render_without_component(text: render_component(component, settings)) }
-        format.json { render_without_component(json: component_attributes(component, settings)) }
+        format.html { render_without_component(text: render_component(component, options)) }
+        format.json { render_without_component(json: component_attributes(component, options)) }
       end
     else
       render_without_component(*args, &block)
@@ -37,8 +37,8 @@ module Rafters::ComponentContext
     @_component_renderer ||= Rafters::ComponentRenderer.new(self)
   end
 
-  def component(name, settings = {})
+  def component(name, options = {})
     component_klass = "#{name}_component".classify.constantize
-    component = component_klass.new(settings)
+    component = component_klass.new(options)
   end
 end

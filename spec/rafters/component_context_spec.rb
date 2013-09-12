@@ -18,7 +18,7 @@ describe Rafters::ComponentContext do
 
   describe "#render_component" do
     it "renders the provided component" do
-      renderer.should_receive(:render).with(instance_of(FooComponent), nil)
+      renderer.should_receive(:render).with(instance_of(FooComponent))
       controller.render_component(:foo)
     end
 
@@ -26,13 +26,6 @@ describe Rafters::ComponentContext do
       it "renders the provided component with the given settings" do
         FooComponent.should_receive(:new).with({ test: true })
         controller.render_component(:foo, test: true)
-      end
-    end
-
-    context "with a specified template name" do
-      it "renders the provided component using the given template name" do
-        renderer.should_receive(:render).with(instance_of(FooComponent), "template_name")
-        controller.render_component(:foo, {}, "template_name")
       end
     end
   end

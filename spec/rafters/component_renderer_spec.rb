@@ -35,12 +35,5 @@ describe Rafters::ComponentRenderer do
       view_context.should_receive(:render).with(file: "/template", locals: { title: "Foo" })
       subject.render(component)
     end
-
-    context "with a specified template name" do
-      it "renders the component with the specified template" do
-        view_context.should_receive(:render).with(file: "/custom_template", locals: { title: "Foo" })
-        subject.render(component, "custom_template")
-      end
-    end
   end
 end

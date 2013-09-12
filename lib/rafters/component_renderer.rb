@@ -7,15 +7,13 @@ class Rafters::ComponentRenderer
     end
   end
 
-  def render(component, template_name = nil)
+  def render(component)
     component.controller = @controller
-
-    template_name = (template_name || component.template_name)
 
     store(component)
 
     @controller.view_context.content_tag(:div, class: "component", id: component.identifier) do
-      @controller.view_context.render(file: "/#{template_name}", locals: component.attributes)
+      @controller.view_context.render(file: "/#{component.template_name}", locals: component.attributes)
     end
   end
 
