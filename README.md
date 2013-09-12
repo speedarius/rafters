@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/andyhite/rafters.png?branch=master)](https://travis-ci.org/andyhite/rafters)
 [![Gem Version](https://badge.fury.io/rb/rafters.png)](http://badge.fury.io/rb/rafters)
 [![Code Climate](https://codeclimate.com/github/andyhite/rafters.png)](https://codeclimate.com/github/andyhite/rafters)
+[![Coverage Status](https://coveralls.io/repos/andyhite/rafters/badge.png)](https://coveralls.io/r/andyhite/rafters)
 
 Rafters lets you think about each page of your application as a collection of small pieces instead of monolithic, difficult to maintain
 views.
