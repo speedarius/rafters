@@ -1,9 +1,9 @@
+require 'coveralls'
+Coveralls.wear!
+
 ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../dummy/config/environment.rb", __FILE__)
 require 'rspec/rails'
-require 'coveralls'
-
-Coveralls.wear!
 
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
