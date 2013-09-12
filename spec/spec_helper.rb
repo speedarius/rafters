@@ -1,6 +1,11 @@
 require 'coveralls'
 Coveralls.wear!
 
+SimpleCov.formatter = Coveralls::SimpleCov::Formatter
+SimpleCov.start do
+  add_filter 'spec/dummy'
+end
+
 ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../dummy/config/environment.rb", __FILE__)
 require 'rspec/rails'
