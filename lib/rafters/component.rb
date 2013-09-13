@@ -11,13 +11,24 @@ module Rafters::Component
   def initialize(options = {})
     raise IdentifierMissing unless options.has_key?(:as)
 
+    @source = if options.has_key?(:source)
+      options.delete(:source).constantize.new(self)
+    end
+
     @identifier = options.delete(:as)
     @settings = options.delete(:settings) || {}
   end
 
-  def name(without_postfix = false)
-    _name = self.class.name.underscore
-    without_postfix ? _name.gsub(/_component/, '') : _name
+  def name
+    self.class.name.underscore
+  end
+
+  def source
+    if @source.nil?
+      raise SourceMissing
+    else
+      @source
+    end
   end
 
   def template_name
@@ -26,10 +37,6 @@ module Rafters::Component
       _template_name = _template_name.call(self) if _template_name.is_a?(Proc)
       _template_name
     end
-  end
-
-  def source
-    @source ||= "#{name(true)}_#{settings.source}_source".camelize.constantize.new(self)
   end
 
   def attributes
@@ -106,6 +113,7 @@ module Rafters::Component
     end
   end
 
+  class SourceMissing < StandardError; end
   class IdentifierMissing < StandardError; end
   class InvalidSetting < StandardError; end
 end

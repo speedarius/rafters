@@ -12,7 +12,7 @@ class Rafters::ComponentRenderer
 
     store(component)
 
-    @controller.view_context.content_tag(:div, class: "component", id: component.identifier) do
+    @controller.view_context.content_tag(:div, class: "component #{component.name.dasherize}", id: component.identifier) do
       @controller.view_context.render(file: "/#{component.template_name}", locals: component.attributes)
     end
   end
