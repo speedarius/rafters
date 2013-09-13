@@ -34,7 +34,7 @@ module Rafters::Context
   private
 
   def component_renderer
-    @_component_renderer ||= Rafters::Renderer.new(self)
+    @_component_renderer ||= Rafters::Renderer.new(self, view_context)
   end
 
   def component(name, options = {})
