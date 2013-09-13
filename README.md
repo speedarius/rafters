@@ -190,7 +190,7 @@ There are often times when a single, general component can be powered by multipl
 
 To create a source, run the following generator:
 
-```ruby
+```sh
 $ rails g rafters:source {component_name} {source_name}
 ```
 
