@@ -2,22 +2,22 @@ module Rafters::Component
   extend ActiveSupport::Concern
 
   attr_writer :controller
+  attr_reader :identifier
 
   included do
-    attribute :settings
+    attributes :settings, :identifier
   end
 
-  def initialize(settings = {})
-    @settings = settings
+  def initialize(options = {})
+    raise IdentifierMissing unless options.has_key?(:as)
+
+    @identifier = options.delete(:as)
+    @settings = options.delete(:settings) || {}
   end
 
   def name(without_postfix = false)
     _name = self.class.name.underscore
     without_postfix ? _name.gsub(/_component/, '') : _name
-  end
-
-  def identifier
-    @identifier ||= "#{name}-#{random_identifier}"
   end
 
   def template_name
@@ -80,14 +80,6 @@ module Rafters::Component
 
   private
 
-  def random_seed
-    rand(DateTime.now.to_i).to_s
-  end
-
-  def random_identifier
-    Digest::MD5.hexdigest(random_seed)[0..6]
-  end
-
   module ClassMethods
     attr_accessor :_attributes, :_defaults, :_template_name
 
@@ -114,6 +106,6 @@ module Rafters::Component
     end
   end
 
-  class SettingRequired < StandardError; end
+  class IdentifierMissing < StandardError; end
   class InvalidSetting < StandardError; end
 end

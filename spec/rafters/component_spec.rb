@@ -17,7 +17,7 @@ describe Rafters::Component do
       HeadingComponent.send(:define_method, :title, -> { "Lorem Ipsum" })
       HeadingComponent.attribute(:title)
 
-      heading = HeadingComponent.new
+      heading = HeadingComponent.new(as: "heading")
       heading.attributes.should have_key(:title)
     end
   end
@@ -28,7 +28,7 @@ describe Rafters::Component do
       HeadingComponent.send(:define_method, :subtitle, -> { "Dolor Sit Amet" })
       HeadingComponent.attributes(:title, :subtitle)
 
-      heading = HeadingComponent.new
+      heading = HeadingComponent.new(as: "heading")
       heading.attributes.keys.map(&:to_sym).should include(:title)
       heading.attributes.keys.map(&:to_sym).should include(:subtitle)
     end
@@ -38,7 +38,7 @@ describe Rafters::Component do
     it "adds default values to the component settings" do
       HeadingComponent.defaults(foo: "bar")
 
-      heading = HeadingComponent.new
+      heading = HeadingComponent.new(as: "heading")
       heading.settings.foo.should == "bar"
     end
   end
@@ -49,15 +49,15 @@ describe Rafters::Component do
       HeadingComponent.attribute(:title)
     end
 
-    subject { HeadingComponent.new }
+    subject { HeadingComponent.new(as: "heading") }
 
     it "returns the registered attributes and their values" do
-      subject.attributes.should == Hashie::Mash.new({ title: "Lorem Ipsum", settings: {} })
+      subject.attributes.should == Hashie::Mash.new({ title: "Lorem Ipsum", identifier: "heading", settings: {} })
     end
   end
 
   describe "#settings" do
-    subject { HeadingComponent.new({ type: "h2" }) }
+    subject { HeadingComponent.new(as: "heading", settings: { type: "h2" }) }
 
     it "returns the provided settings" do
       subject.settings.should == Hashie::Mash.new({ type: "h2" })
@@ -70,7 +70,7 @@ describe Rafters::Component do
   end
 
   describe "#template_name" do
-    subject { HeadingComponent.new }
+    subject { HeadingComponent.new(as: "heading") }
 
     context "with no specified template name" do
       it "returns the inferred template name" do
@@ -103,7 +103,7 @@ describe Rafters::Component do
   end
 
   describe "#controller" do
-    subject { HeadingComponent.new }
+    subject { HeadingComponent.new(as: "heading") }
 
     let(:controller) { Object.new }
 
@@ -141,7 +141,7 @@ describe Rafters::Component do
   after do
     # A little housekeeping after each spec runs, so that
     # we have fresh values for each class attribute
-    HeadingComponent._attributes = [:settings]
+    HeadingComponent._attributes = [:settings, :identifier]
     HeadingComponent._defaults = {}
     HeadingComponent._template_name = nil
   end

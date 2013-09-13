@@ -19,13 +19,13 @@ describe Rafters::ComponentContext do
   describe "#render_component" do
     it "renders the provided component" do
       renderer.should_receive(:render).with(instance_of(FooComponent))
-      controller.render_component(:foo)
+      controller.render_component(:foo, as: "foo")
     end
 
     context "with settings" do
       it "renders the provided component with the given settings" do
-        FooComponent.should_receive(:new).with({ test: true })
-        controller.render_component(:foo, test: true)
+        FooComponent.should_receive(:new).with({ as: "foo", settings: { test: true } })
+        controller.render_component(:foo, { as: "foo", settings: { test: true } })
       end
     end
   end

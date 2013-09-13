@@ -62,12 +62,12 @@ The two most important files generated above are `app/rafters/[name]/[name]_comp
 
 ### Rendering a component
 
-You can render components anywhere - in your view, in your controller, in another component, etc. - but the most common place will (obviously) be in your views. To render a component, call `render_component [symbolized, underscored name]` in one of your app views. For example:
+You can render components anywhere - in your view, in your controller, in another component, etc. - but the most common place will (obviously) be in your views. To render a component, call `render_component :component_name, as: "unique-identifier"` in one of your app views. For example:
 
 ```erb
 ...
 <div class="main">
-  <%= render_component :heading %>
+  <%= render_component :heading, as: "page-heading" %>
 </div>
 ...
 ```
@@ -148,7 +148,7 @@ Setting values are specified when rendering a component:
 ```erb
 ...
 <div class="main">
-  <%= render_component :posts, published: true %>
+  <%= render_component :posts, as: "published-posts", settings: { published: true } %>
 </div>
 ...
 ```
