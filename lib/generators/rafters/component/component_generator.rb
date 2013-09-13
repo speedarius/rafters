@@ -7,6 +7,7 @@ class Rafters::ComponentGenerator < Rails::Generators::NamedBase
     empty_directory "#{base_directory}/assets/javascripts"
     empty_directory "#{base_directory}/assets/stylesheets"
     empty_directory "#{base_directory}/assets/images"
+    empty_directory "#{base_directory}/sources"
     empty_directory "#{base_directory}/views"
   end
 
@@ -22,10 +23,6 @@ class Rafters::ComponentGenerator < Rails::Generators::NamedBase
   end
 
   private
-
-  def app_root
-    Rails.root
-  end
 
   def base_directory
     "app/components/#{file_name}"

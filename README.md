@@ -45,17 +45,17 @@ When you build out a page using Rafters you're effectively breaking it down into
 To begin creating a new component, run the following generator:
 
 ```sh
-$ rails generate rafters:component [name]
+$ rails generate rafters:component {name}
 ```
   
 This generator will create the following files:
 
 ```
-app/rafters/[name]
-app/rafters/[name]/[name]_component.rb
-app/rafters/[name]/assets/stylesheets/[name]_component.scss
-app/rafters/[name]/assets/javascripts/[name]_component.js.coffee
-app/rafters/[name]/views/[name]_component.html.erb
+app/rafters/{name}
+app/rafters/{name}/{name}_component.rb
+app/rafters/{name}/assets/stylesheets/{name}_component.scss
+app/rafters/{name}/assets/javascripts/{name}_component.js.coffee
+app/rafters/{name}/views/{name}_component.html.erb
 ```
   
 The two most important files generated above are `app/rafters/[name]/[name]_component.rb` and `app/rafters/[name]/views/[name]_component.html.erb`, which are (respectively) our component controller and view.
@@ -183,6 +183,94 @@ Default values can be provided for settings using `Rafters::Component.defaults` 
 defaults type: "comment", filter: "none"
 default :published, false
 ```
+
+## Creating a source option for a component
+
+There are often times when a single, general component can be powered by multiple complex data sources. In order to do this Rafters includes to option to create "source" classes that belong to individual components. Each source should expose an interface that can be consumed by the component's template, and options that are set on the component level are accessible at the source level as well.
+
+To create a source, run the following generator:
+
+```ruby
+$ rails g rafters:source {component name} {source name}
+```
+
+This generator will create a file named `{component name}_{source name}_source.rb` in the specified component's sources directory.
+
+A source class is a simple Ruby class that includes the `Rafters::Source` module. You can do pretty much anything you want with source classes (including subclassing), as long as they all expose the same public interface methods. When a component is configured to use a specific source, the `#source` method in that component will return an instance of the specified source class.
+
+Here's a basic example - a list-view component with one source:
+
+The component itself:
+
+```ruby
+class ListViewComponent
+  include Rafters::Component
+  
+  attribute :items
+  
+  private
+  
+  def items
+    source.items
+  end
+end
+```
+
+A source for the component:
+
+```ruby
+class ListViewCommentSource
+  include Rafters::Source
+  
+  def items
+    @items ||= Comment.all
+  end
+end
+```
+
+The component's view template:
+
+```erb
+<ul>
+  <% items.each do |item| %>
+    <li><%= item.body %></li>
+  <% end %>
+</ul>
+```
+
+To render the above component with the `ListViewCommentSource`:
+
+```erb
+<div class="main">
+  <%= render_component :list_view, as: "comments-list", source: "ListViewCommentSource"
+</div>
+```
+
+If you want to add another source option for this component, simply create a new source class with the same interface:
+
+```ruby
+class ListViewPostSource
+  include Rafters::Source
+  
+  def items
+    @items ||= Post.where({
+      category_id: settings.category_id
+    }).all
+  end
+end
+```
+
+And render the component with the new source (and any settings that it may require):
+
+```erb
+<div class="main">
+  <%= render_component :list_view, as: "posts-list", source: "ListViewPostSource", {
+    category_id: @category.id
+  } %>
+</div>
+```
+
+The `Rafters::Component#controller` and `Rafters::Component#settings` methods are both available within your source classes, and will return the same information that they would in the related component.
 
 ## Contributing
 
