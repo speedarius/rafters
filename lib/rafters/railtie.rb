@@ -1,4 +1,4 @@
-require 'rafters/directive_processor'
+require 'rafters/sprockets/directive_processor'
 
 class Rafters::Railtie < Rails::Railtie
   initializer "rafters.load_view_paths" do |app|
