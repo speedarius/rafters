@@ -58,14 +58,10 @@ module Rafters::Component
     return {} if @controller.nil?
 
     @_overrides ||= Hashie::Mash.new.tap do |_overrides|
-      (parameters || {}).each do |name, value|
+      (controller(:params)[identifier] || {}).each do |name, value|
         _overrides[name] = value
       end
     end
-  end
-
-  def parameters
-    @parameters ||= (controller(:params)[name(true)] || {})[identifier]
   end
 
   def controller(variable_or_method_name)
