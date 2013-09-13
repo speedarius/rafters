@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Rafters::ComponentRenderer do
+describe Rafters::Renderer do
   let(:view_context) { double("ViewContext").as_null_object }
   let(:controller) { double("Controller").as_null_object }
 
@@ -17,12 +17,12 @@ describe Rafters::ComponentRenderer do
 
     it "should add the view paths for all components to the controller" do
       controller.should_receive(:prepend_view_path).with("/path/to/views")
-      Rafters::ComponentRenderer.new(controller)
+      Rafters::Renderer.new(controller)
     end
   end
 
   describe "#render" do
-    subject { Rafters::ComponentRenderer.new(controller) }
+    subject { Rafters::Renderer.new(controller) }
 
     let(:component) { double("Component").as_null_object }
 

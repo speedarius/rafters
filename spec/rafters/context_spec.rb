@@ -1,19 +1,19 @@
 require 'spec_helper'
 
 class FooController < ActionController::Base
-  include Rafters::ComponentContext
+  include Rafters::Context
 end
 
 class FooComponent
   include Rafters::Component
 end
 
-describe Rafters::ComponentContext do
+describe Rafters::Context do
   let(:controller) { FooController.new }
-  let(:renderer) { double("ComponentRenderer", render: "<p>Output</p>") }
+  let(:renderer) { double("Renderer", render: "<p>Output</p>") }
 
   before do
-    Rafters::ComponentRenderer.stub(:new).and_return(renderer)
+    Rafters::Renderer.stub(:new).and_return(renderer)
   end
 
   describe "#render_component" do

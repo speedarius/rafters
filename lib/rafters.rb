@@ -8,8 +8,8 @@ module Rafters
 
   eager_autoload do
     autoload :Component
-    autoload :ComponentContext
-    autoload :ComponentRenderer
+    autoload :Context
+    autoload :Renderer
     autoload :Source
   end
 
@@ -24,4 +24,4 @@ module Rafters
   @@asset_paths = nil
 end
 
-ActionController::Base.send(:include, Rafters::ComponentContext)
+ActionController::Base.send(:include, Rafters::Context)

@@ -1,4 +1,4 @@
-class Rafters::ComponentRenderer
+class Rafters::Renderer
   def initialize(controller)
     @controller = controller
 

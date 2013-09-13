@@ -1,4 +1,4 @@
-module Rafters::ComponentContext
+module Rafters::Context
   extend ActiveSupport::Concern
 
   included do
@@ -34,7 +34,7 @@ module Rafters::ComponentContext
   private
 
   def component_renderer
-    @_component_renderer ||= Rafters::ComponentRenderer.new(self)
+    @_component_renderer ||= Rafters::Renderer.new(self)
   end
 
   def component(name, options = {})
