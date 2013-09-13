@@ -43,7 +43,7 @@ module Rafters::Component
   end
 
   def settings
-    @_settings ||= Hashie::Mash.new(@settings.reverse_merge(overrides).reverse_merge(defaults))
+    @_settings ||= Hashie::Mash.new(defaults.merge(@settings).merge(overrides))
   end
 
   def defaults
