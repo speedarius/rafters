@@ -58,7 +58,7 @@ app/rafters/{name}/assets/javascripts/{name}_component.js.coffee
 app/rafters/{name}/views/{name}_component.html.erb
 ```
   
-The two most important files generated above are `app/rafters/[name]/[name]_component.rb` and `app/rafters/[name]/views/[name]_component.html.erb`, which are (respectively) our component controller and view.
+The two most important files generated above are `app/rafters/{name}/{name}_component.rb` and `app/rafters/{name}/views/{name}_component.html.erb`, which are (respectively) our component controller and view.
 
 ### Rendering a component
 
@@ -191,10 +191,10 @@ There are often times when a single, general component can be powered by multipl
 To create a source, run the following generator:
 
 ```ruby
-$ rails g rafters:source {component name} {source name}
+$ rails g rafters:source {component_name} {source_name}
 ```
 
-This generator will create a file named `{component name}_{source name}_source.rb` in the specified component's sources directory.
+This generator will create a file named `{component_name}_{source_name}_source.rb` in the specified component's sources directory.
 
 A source class is a simple Ruby class that includes the `Rafters::Source` module. You can do pretty much anything you want with source classes (including subclassing), as long as they all expose the same public interface methods. When a component is configured to use a specific source, the `#source` method in that component will return an instance of the specified source class.
 
