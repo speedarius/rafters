@@ -184,7 +184,7 @@ defaults type: "comment", filter: "none"
 default :published, false
 ```
 
-## Creating a source option for a component
+### Creating a source option for a component
 
 There are often times when a single, general component can be powered by multiple complex data sources. In order to do this Rafters includes to option to create "source" classes that belong to individual components. Each source should expose an interface that can be consumed by the component's template, and options that are set on the component level are accessible at the source level as well.
 
