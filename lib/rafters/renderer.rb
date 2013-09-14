@@ -11,8 +11,6 @@ class Rafters::Renderer
   def render(component)
     component.controller = @controller
 
-    store(component)
-
     @view_context.content_tag(:div, class: "component #{component.name.dasherize}", id: component.identifier) do
       @view_context.render(file: "/#{component.template_name}", locals: component.attributes)
     end
@@ -20,8 +18,4 @@ class Rafters::Renderer
 
   private
 
-  def store(component)
-    @controller.rendered_components ||= {}
-    @controller.rendered_components.merge!(component.as_json)
-  end
 end
