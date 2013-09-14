@@ -20,7 +20,7 @@ module Rafters::Context
 
   def render_with_component(*args, &block)
     if params[:component]
-      component, settings = params[:component], params[:options]
+      component, options = params[:component], params[:options]
 
       respond_to do |format|
         format.html { render_without_component(text: render_component(component, options)) }
