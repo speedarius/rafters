@@ -11,11 +11,8 @@ class Rafters::Renderer
   def render(component)
     component.controller = @controller
 
-    @view_context.content_tag(:div, class: "component #{component.name.dasherize}", id: component.identifier) do
-      @view_context.render(file: "/#{component.template_name}", locals: component.attributes)
+    @view_context.content_tag(:div, class: "component #{component.view_name.dasherize}", id: component.identifier) do
+      @view_context.render(file: "/#{component.view_name}", locals: component.locals)
     end
   end
-
-  private
-
 end

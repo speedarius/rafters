@@ -1,74 +1,12 @@
-module Rafters::Component
-  extend ActiveSupport::Concern
-
+class Rafters::Component
   attr_writer :controller
-  attr_reader :identifier
-
-  included do
-    attributes :settings, :identifier
-  end
+  attr_reader :identifier, :view_name, :source_name, :local_settings
 
   def initialize(options = {})
-    raise IdentifierMissing unless options.has_key?(:as)
-
-    @source = if options.has_key?(:source)
-      options.delete(:source).constantize.new(self)
-    end
-
-    @identifier = options.delete(:as)
-    @settings = options.delete(:settings) || {}
-  end
-
-  def name
-    self.class.name.underscore
-  end
-
-  def source
-    if @source.nil?
-      raise SourceMissing
-    else
-      @source
-    end
-  end
-
-  def template_name
-    @_template_name ||= begin
-      _template_name = (self.class._template_name || self.class.name.underscore)
-      _template_name = _template_name.call(self) if _template_name.is_a?(Proc)
-      _template_name
-    end
-  end
-
-  def attributes
-    return {} if self.class._attributes.nil?
-
-    @_attributes ||= Hashie::Mash.new.tap do |_attributes|
-      (self.class._attributes || []).each do |name|
-        _attributes[name] = send(name)
-      end
-    end
-  end
-
-  def settings
-    @_settings ||= Hashie::Mash.new(defaults.merge(@settings).merge(overrides))
-  end
-
-  def defaults
-    @_defaults ||= Hashie::Mash.new.tap do |_defaults|
-      (self.class._defaults || {}).each do |name, value|
-        _defaults[name] = value.is_a?(Proc) ? value.call(self) : value
-      end
-    end
-  end
-
-  def overrides
-    return {} if @controller.nil?
-
-    @_overrides ||= Hashie::Mash.new.tap do |_overrides|
-      (controller(:params)[identifier] || {}).each do |name, value|
-        _overrides[name] = value
-      end
-    end
+    @identifier = options.delete(:as) || self.class.name.dasherize
+    @view_name = options.delete(:view_name) || self.class.name.underscore
+    @source_name = options.delete(:source_name)
+    @local_settings = options[:settings] || {}
   end
 
   def controller(variable_or_method_name)
@@ -81,39 +19,67 @@ module Rafters::Component
     end
   end
 
-  def as_json
-    { identifier => { "class" => self.class.name, "attributes" => attributes.as_json } }
+  def source
+    @source ||= source_name ? source_name.constantize.new(self) : nil
+  end
+
+  def settings
+    @settings ||= Hashie::Mash.new.tap do |_settings|
+      _settings.merge!(default_settings)
+      _settings.merge!(local_settings)
+      _settings.merge!(parameter_settings)
+    end
+  end
+
+  def attributes
+    @attributes ||= Hashie::Mash.new.tap do |_attributes|
+      (self.class._attributes || {}).each do |name|
+        _attributes[name] = send(name)
+      end
+    end
+  end
+
+  def locals
+    attributes.merge(settings: settings, component: self)
+  end
+
+  def as_json(options = {})
+    { identifier: identifier, view_name: view_name, source_name: source_name, settings: settings.as_json }
+  end
+
+  class << self
+    attr_accessor :_settings, :_default_settings, :_attributes
+
+    def setting(name, options = {})
+      (self._settings ||= []) << name
+      (self._default_settings ||= {})[name] = options[:default] || nil
+    end
+
+    def settings(settings = {})
+      settings.each do |name, options|
+        setting(name, options)
+      end
+    end
+
+    def attribute(name)
+      (self._attributes ||= []) << name
+    end
+
+    def attributes(*names)
+      names.each do |name|
+        attribute(name)
+      end
+    end
   end
 
   private
 
-  module ClassMethods
-    attr_accessor :_attributes, :_defaults, :_template_name
-
-    def attribute(name)
-      self._attributes ||= []
-      self._attributes << name
-    end
-
-    def attributes(*names)
-      names.each { |name| attribute(name) }
-    end
-
-    def default(name, value)
-      self._defaults ||= {}
-      self._defaults[name] = value
-    end
-
-    def defaults(settings = {})
-      settings.each { |name, value| default(name, value) }
-    end
-
-    def template_name(name)
-      self._template_name = name.to_s
-    end
+  def default_settings
+    self.class._default_settings || {}
   end
 
-  class SourceMissing < StandardError; end
-  class IdentifierMissing < StandardError; end
-  class InvalidSetting < StandardError; end
+  def parameter_settings
+    parameters = controller(:params)
+    parameters[identifier] || {}
+  end
 end
