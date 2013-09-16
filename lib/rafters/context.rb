@@ -37,6 +37,6 @@ module Rafters::Context
 
   def component(name, options = {})
     component_klass = "#{name}_component".classify.constantize
-    component = component_klass.new(options)
+    component = component_klass.new(options.delete(:as), options)
   end
 end
