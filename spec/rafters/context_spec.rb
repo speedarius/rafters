@@ -4,9 +4,7 @@ class FooController < ActionController::Base
   include Rafters::Context
 end
 
-class FooComponent
-  include Rafters::Component
-end
+class FooComponent < Rafters::Component; end
 
 describe Rafters::Context do
   let(:controller) { FooController.new }
@@ -22,9 +20,9 @@ describe Rafters::Context do
       controller.render_component(:foo, as: "foo")
     end
 
-    context "with settings" do
-      it "renders the provided component with the given settings" do
-        FooComponent.should_receive(:new).with({ as: "foo", settings: { test: true } })
+    context "with options" do
+      it "renders the provided component with the given options" do
+        FooComponent.should_receive(:new).with("foo", { settings: { test: true } })
         controller.render_component(:foo, { as: "foo", settings: { test: true } })
       end
     end

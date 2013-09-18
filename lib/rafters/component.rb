@@ -1,5 +1,5 @@
 class Rafters::Component
-  attr_writer :controller
+  attr_writer :controller, :local_options, :local_settings
   attr_reader :identifier
 
   def initialize(identifier, options = {})
@@ -110,7 +110,7 @@ class Rafters::Component
   def parameter_options
     parameters = controller(:params)
 
-    {}.tap do |_options|
+    HashWithIndifferentAccess.new.tap do |_options|
       (parameters[identifier] || {}).each do |key, value|
         _options[key] = cast_value_from_string(value)
       end
@@ -118,7 +118,7 @@ class Rafters::Component
   end
 
   def parameter_settings
-    {}.tap do |_settings|
+    HashWithIndifferentAccess.new.tap do |_settings|
       (parameter_options[:settings] || {}).each do |key, value|
         _settings[key] = cast_value_from_string(value)
       end

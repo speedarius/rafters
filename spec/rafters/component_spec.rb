@@ -1,148 +1,176 @@
 require 'spec_helper'
 
-class HeadingComponent
-  include Rafters::Component
-end
-
 describe Rafters::Component do
-  describe ".template_name" do
-    it "set the component's template name to the provided value" do
-      HeadingComponent.template_name("foo_bar_baz")
-      HeadingComponent._template_name == "foo_bar_baz"
-    end
+  before do
+    Object.send(:remove_const, 'HeadingComponent') if defined?(HeadingComponent)
+    class HeadingComponent < Rafters::Component; end
   end
 
-  describe ".attribute" do
-    it "adds the provided method to the component's attributes" do
-      HeadingComponent.send(:define_method, :title, -> { "Lorem Ipsum" })
-      HeadingComponent.attribute(:title)
-
-      heading = HeadingComponent.new(as: "heading")
-      heading.attributes.should have_key(:title)
-    end
+  let(:controller) do 
+    double("Controller", params: {})
   end
 
-  describe ".attributes" do
-    it "adds a list of methods to the components attributes" do
-      HeadingComponent.send(:define_method, :title, -> { "Lorem Ipsum" })
-      HeadingComponent.send(:define_method, :subtitle, -> { "Dolor Sit Amet" })
-      HeadingComponent.attributes(:title, :subtitle)
-
-      heading = HeadingComponent.new(as: "heading")
-      heading.attributes.keys.map(&:to_sym).should include(:title)
-      heading.attributes.keys.map(&:to_sym).should include(:subtitle)
-    end
+  subject do 
+    component = HeadingComponent.new("heading")
+    component.controller = controller
+    component
   end
 
-  describe ".defaults" do
-    it "adds default values to the component settings" do
-      HeadingComponent.defaults(foo: "bar")
-
-      heading = HeadingComponent.new(as: "heading")
-      heading.settings.foo.should == "bar"
-    end
-  end
-
-  describe "#attributes" do
-    before do
-      HeadingComponent.send(:define_method, :title, -> { "Lorem Ipsum" })
-      HeadingComponent.attribute(:title)
+  describe "#options" do
+    it "replaces proc values with their result" do
+      HeadingComponent.option :wrapper, lambda { |component| component.is_a?(Rafters::Component) }
+      subject.options.wrapper.should == true
     end
 
-    subject { HeadingComponent.new(as: "heading") }
+    context "with default options" do
+      before do
+        HeadingComponent.option :view_name, "heading_component"
+      end
 
-    it "returns the registered attributes and their values" do
-      subject.attributes.should == Hashie::Mash.new({ title: "Lorem Ipsum", identifier: "heading", settings: {} })
+      it "returns the default values for those options" do
+        subject.options.view_name.should == "heading_component"
+      end
+
+      context "and local options" do
+        before do
+          subject.local_options = { view_name: "foo_component" }
+        end
+
+        it "returns the local values for those options" do
+          subject.options.view_name.should == "foo_component"
+        end
+      end
+
+      context "and param options" do
+        let(:params) do
+          HashWithIndifferentAccess.new({ heading: { view_name: "baz_component" } })
+        end
+
+        before do
+          controller.stub(:params).and_return(params)
+        end
+
+        it "returns the param values for those options" do
+          subject.options.view_name.should == "baz_component"
+        end
+      end
+    end
+
+    context "with local options" do
+      before do
+        subject.local_options = { view_name: "lipsum_component" }
+      end
+
+      it "returns the locally defined values for those options" do
+        subject.options.view_name.should == "lipsum_component"
+      end
+
+      context "and param options" do
+        let(:params) do
+          HashWithIndifferentAccess.new({ heading: { view_name: "dolor_component" } })
+        end
+
+        before do
+          controller.stub(:params).and_return(params)
+        end
+
+        it "returns the param values for those options" do
+          subject.options.view_name.should == "dolor_component"
+        end
+      end
+    end
+
+    context "with param options" do
+      let(:params) do
+        HashWithIndifferentAccess.new({ heading: { view_name: "bacon_component" } })
+      end
+
+      before do
+        controller.stub(:params).and_return(params)
+      end
+
+      it "returns the param values for those options" do
+        subject.options.view_name.should == "bacon_component"
+      end
     end
   end
 
   describe "#settings" do
-    subject { HeadingComponent.new(as: "heading", settings: { type: "h2" }) }
-
-    it "returns the provided settings" do
-      subject.settings.should == Hashie::Mash.new({ type: "h2" })
+    it "replaces proc values with their result" do
+      HeadingComponent.setting :title, default: lambda { |component| component.class.name.titleize }
+      subject.settings.title.should == "Heading Component"
     end
 
-    it "gives provided settings precedence over default settings" do
-      HeadingComponent.default(:type, "h1")
-      subject.settings[:type].should == "h2"
-    end
-  end
-
-  describe "#template_name" do
-    subject { HeadingComponent.new(as: "heading") }
-
-    context "with no specified template name" do
-      it "returns the inferred template name" do
-        subject.template_name.should == "heading_component"
-      end
-    end
-
-    context "with a specified template name" do
-      context "(string / symbol)" do
-        before do
-          HeadingComponent.stub(:_template_name).and_return("foo_bar_baz")
-        end
-
-        it "returns the specified template name" do
-          subject.template_name.should == "foo_bar_baz"
-        end
-      end
-
-      context "(proc)" do
-        before do
-          HeadingComponent.send(:define_method, :foo_bar, -> { "foo_bar_bacon" })
-          HeadingComponent.stub(:_template_name).and_return(lambda { |c| c.foo_bar })
-        end
-
-        it "calls the proc and returns the stringified result" do
-          subject.template_name.should == "foo_bar_bacon"
-        end
-      end
-    end
-  end
-
-  describe "#controller" do
-    subject { HeadingComponent.new(as: "heading") }
-
-    let(:controller) { Object.new }
-
-    before do
-      subject.controller = controller
-    end
-
-    context "when referencing an instance variable in the controller" do
+    context "with default settings" do
       before do
-        controller.instance_variable_set("@foo_bar", "lorem ipsum")
+        HeadingComponent.setting :title, default: "Heading Component"
       end
 
-      it "returns the value of the instance variable" do
-        subject.controller(:foo_bar).should == "lorem ipsum"
+      it "returns the default values for those settings" do
+        subject.settings.title.should == "Heading Component"
+      end
+
+      context "and local settings" do
+        before do
+          subject.local_settings = { title: "Foo Heading" }
+        end
+
+        it "returns the local values for those settings" do
+          subject.settings.title.should == "Foo Heading"
+        end
+      end
+
+      context "and param settings" do
+        let(:params) do
+          HashWithIndifferentAccess.new({ heading: { settings: { title: "Baz Component" } } })
+        end
+
+        before do
+          controller.stub(:params).and_return(params)
+        end
+
+        it "returns the param values for those settings" do
+          subject.settings.title.should == "Baz Component"
+        end
       end
     end
 
-    context "when referencing a method in the controller" do
+    context "with local settings" do
       before do
-        controller.singleton_class.send(:define_method, :lorem_ipsum, -> { "foo bar" })
+        subject.local_settings = { title: "Lorem Component" }
       end
 
-      it "returns the value of the method" do
-        subject.controller(:lorem_ipsum).should == "foo bar"
+      it "returns the locally defined values for those settings" do
+        subject.settings.title.should == "Lorem Component"
+      end
+
+      context "and param settings" do
+        let(:params) do
+          HashWithIndifferentAccess.new({ heading: { settings: { title: "Dolor Component" } } })
+        end
+
+        before do
+          controller.stub(:params).and_return(params)
+        end
+
+        it "returns the param values for those settings" do
+          subject.settings.title.should == "Dolor Component"
+        end
       end
     end
 
-    context "when there is neither a method nor an instance variable with the given name in the controller" do
-      it "returns nil" do
-        subject.controller(:doesnt_exist).should == nil
+    context "with param settings" do
+      let(:params) do
+        HashWithIndifferentAccess.new({ heading: { settings: { title: "Bacon Component" } } })
+      end
+
+      before do
+        controller.stub(:params).and_return(params)
+      end
+
+      it "returns the param values for those settings" do
+        subject.settings.title.should == "Bacon Component"
       end
     end
-  end
-
-  after do
-    # A little housekeeping after each spec runs, so that
-    # we have fresh values for each class attribute
-    HeadingComponent._attributes = [:settings, :identifier]
-    HeadingComponent._defaults = {}
-    HeadingComponent._template_name = nil
   end
 end
