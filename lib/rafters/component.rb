@@ -34,16 +34,8 @@ class Rafters::Component
     end
   end
 
-  def view_name
-    @view_name ||= (options[:view_name] || self.class.name.underscore)
-  end
-
-  def source_name
-    @source_name ||= options[:source_name]
-  end
-
   def source
-    @source ||= (source_name ? source_name.constantize.new(self) : nil)
+    @source ||= (options.source_name ? options.source_name.constantize.new(self) : nil)
   end
 
   def locals
@@ -51,7 +43,7 @@ class Rafters::Component
   end
 
   def as_json(options = {})
-    { identifier: identifier, view_name: view_name, source_name: source_name, settings: settings.as_json }
+    { identifier: identifier, options: options.as_json, settings: settings.as_json }
   end
 
   def controller(variable_or_method_name)
@@ -67,8 +59,10 @@ class Rafters::Component
   class << self
     attr_accessor :_attributes, :_settings, :_default_settings, :_default_options
 
-    def extended(base)
-      base.options wrapper: true
+    def inherited(base)
+      base.option :wrapper, true
+      base.option :view_name, base.name.underscore
+      base.option :source_name, nil
     end
 
     def setting(name, options = {})
