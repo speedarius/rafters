@@ -13,7 +13,7 @@ class Rafters::Component
   def options
     @options ||= evaluate_options_merge_chain(@local_options).tap do |_options|
       _options.each do |name, value|
-        _options[name] = value.is_a?(Proc) ? value.call(self) : value
+        _options[name] = value.is_a?(Proc) ? value.call(self) : cast_value_from_string(value)
       end
     end
   end
@@ -21,7 +21,7 @@ class Rafters::Component
   def settings
     @settings ||= evaluate_settings_merge_chain(@local_settings).tap do |_settings|
       _settings.each do |name, value|
-        _settings[name] = value.is_a?(Proc) ? value.call(self) : value
+        _settings[name] = value.is_a?(Proc) ? value.call(self) : cast_value_from_string(value)
       end
     end
   end
@@ -42,8 +42,8 @@ class Rafters::Component
     attributes.merge(settings: settings, component: self)
   end
 
-  def as_json(options = {})
-    { identifier: identifier, options: options.as_json, settings: settings.as_json }
+  def as_json(*args)
+    { identifier: identifier, options: options.as_json(*args), settings: settings.as_json(*args) }
   end
 
   def controller(variable_or_method_name)
@@ -109,11 +109,20 @@ class Rafters::Component
 
   def parameter_options
     parameters = controller(:params)
-    parameters[identifier] || {}
+
+    {}.tap do |_options|
+      (parameters[identifier] || {}).each do |key, value|
+        _options[key] = cast_value_from_string(value)
+      end
+    end
   end
 
   def parameter_settings
-    parameter_options[:settings] || {}
+    {}.tap do |_settings|
+      (parameter_options[:settings] || {}).each do |key, value|
+        _settings[key] = cast_value_from_string(value)
+      end
+    end
   end
 
   def evaluate_settings_merge_chain(local_settings)
@@ -129,6 +138,16 @@ class Rafters::Component
       [default_options, local_options, parameter_options].each do |overrides|
         _options.merge!(overrides)
       end
+    end
+  end
+
+  def cast_value_from_string(string)
+    if string == "true" || string == "1"
+      return true
+    elsif string == "false" || string == "0" || string == "nil"
+      return false
+    else 
+      return string
     end
   end
 end
