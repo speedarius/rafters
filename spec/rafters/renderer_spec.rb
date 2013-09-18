@@ -1,14 +1,8 @@
 require 'spec_helper'
 
 describe Rafters::Renderer do
-  let(:view_context) { double("ViewContext").as_null_object }
-  let(:controller) { double("Controller").as_null_object }
-
-  before do
-    view_context.stub(:render).and_return("<p>Output</p>")
-    view_context.stub(:content_tag).and_yield
-    controller.stub(:view_context).and_return(view_context)
-  end
+  let(:view_context) { double("ViewContext", render: true).as_null_object }
+  let(:controller) { double("Controller", content_tag: true).as_null_object }
 
   describe "when initialized" do
     before do
@@ -17,14 +11,20 @@ describe Rafters::Renderer do
 
     it "should add the view paths for all components to the controller" do
       controller.should_receive(:prepend_view_path).with("/path/to/views")
-      Rafters::Renderer.new(controller)
+      Rafters::Renderer.new(controller, view_context)
     end
   end
 
   describe "#render" do
-    subject { Rafters::Renderer.new(controller) }
+    subject { Rafters::Renderer.new(controller, view_context) }
 
-    let(:component) { double("Component").as_null_object }
+    let(:component) do 
+      double("Component", {
+        identifier: "foo-1",
+        options: Hashie::Mash.new({ wrapper: true, view_name: "foo" }), 
+        locals: Hashie::Mash.new({ foo: "bar" })
+      }).as_null_object
+    end
 
     before do
       component.stub(:attributes).and_return({ title: "Foo" })
@@ -32,7 +32,7 @@ describe Rafters::Renderer do
     end
 
     it "renders the component template with it's settings and attributes" do
-      view_context.should_receive(:render).with(file: "/template", locals: { title: "Foo" })
+      view_context.should_receive(:render).with(file: "/foo", locals: Hashie::Mash.new({ foo: "bar" }))
       subject.render(component)
     end
   end
