@@ -1,8 +1,9 @@
-class AuthorComponent
-  include Rafters::Component
+class AuthorComponent < Rafters::Component
 
   # Attributes
   attribute :author
+
+  setting :id, default: nil
 
   private
 

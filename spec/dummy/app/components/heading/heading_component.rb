@@ -1,5 +1,3 @@
-class HeadingComponent
-  include Rafters::Component
-
-  defaults title: "No Title Specified"
+class HeadingComponent < Rafters::Component
+  setting :title, default: "No Title Specified"
 end

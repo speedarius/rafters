@@ -1,5 +1,4 @@
-class LinksComponent
-  include Rafters::Component
+class LinksComponent < Rafters::Component
 
   # Attributes
   attribute :links

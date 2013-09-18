@@ -1,7 +1,8 @@
-class PostComponent
-  include Rafters::Component
+class PostComponent < Rafters::Component
 
   attribute :post
+
+  setting :post, default: nil
 
   private
 

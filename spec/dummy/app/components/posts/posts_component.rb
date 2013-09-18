@@ -1,5 +1,4 @@
-class PostsComponent
-  include Rafters::Component
+class PostsComponent < Rafters::Component
 
   attribute :posts
 
