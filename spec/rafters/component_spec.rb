@@ -121,6 +121,21 @@ describe Rafters::Component do
       subject.settings.published.should === false
     end
 
+    context "with required settings" do
+      before do
+        HeadingComponent.setting :title, required: true
+      end
+
+      it "raises an error if the required setting is nil" do
+        -> { subject.settings }.should raise_error(Rafters::Component::SettingRequired)
+      end
+
+      it "does not raise an error if the required setting is not nil" do
+        subject.local_settings[:title] = "Foo Bar"
+        -> { subject.settings }.should_not raise_error(Rafters::Component::SettingRequired)
+      end
+    end
+
     context "with default settings" do
       before do
         HeadingComponent.setting :title, default: "Heading Component"
