@@ -16,6 +16,19 @@ describe Rafters::Component do
     component
   end
 
+  describe "#excute_callbacks!" do
+    before do
+      HeadingComponent.before_render(:foo)
+      HeadingComponent.before_render(:bar)
+    end
+
+    it "calls all methods in the provided callback stack" do
+      subject.should_receive(:foo).ordered
+      subject.should_receive(:bar).ordered
+      subject.execute_callbacks!(:before_render_callbacks)
+    end
+  end
+
   describe "#options" do
     it "replaces proc values with their result" do
       HeadingComponent.option :wrapper, lambda { |component| component.is_a?(Rafters::Component) }
@@ -358,6 +371,26 @@ describe Rafters::Component do
 
     it "sets the value of the option to the provided value" do
       subject.options.wrapper == false
+    end
+  end
+
+  describe ".before_render" do
+    before do
+      HeadingComponent.before_render(:foo)
+    end
+
+    it "adds the given method to the list of methods that execute before rendering" do
+      subject.send(:before_render_callbacks).should include(:foo)
+    end
+  end
+
+  describe ".after_render" do
+    before do
+      HeadingComponent.after_render(:foo)
+    end
+
+    it "adds the given method to the list of methods that execute after rendering" do
+      subject.send(:after_render_callbacks).should include(:foo)
     end
   end
 end

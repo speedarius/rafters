@@ -56,13 +56,27 @@ class Rafters::Component
     controller(:params)
   end
 
+  def execute_callbacks!(type)
+    send(type).each do |callback|
+      send(callback)
+    end
+  end
+
   class << self
-    attr_accessor :_attributes, :_settings, :_setting_options, :_options
+    attr_accessor :_attributes, :_settings, :_setting_options, :_options, :_before_render_callbacks, :_after_render_callbacks
 
     def inherited(base)
       base.option(:wrapper, true)
       base.option(:view_name, base.name.underscore)
       base.option(:source_name, nil)
+    end
+
+    def before_render(method_name)
+      (self._before_render_callbacks ||= []) << method_name
+    end
+
+    def after_render(method_name)
+      (self._after_render_callbacks ||= []) << method_name
     end
 
     def setting(name, options = {})
@@ -92,6 +106,14 @@ class Rafters::Component
   end
 
   private
+
+  def before_render_callbacks
+    self.class._before_render_callbacks || []
+  end
+
+  def after_render_callbacks
+    self.class._after_render_callbacks || []
+  end
 
   def klass_attributes
     self.class._attributes || []

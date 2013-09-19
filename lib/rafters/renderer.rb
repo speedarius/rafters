@@ -11,10 +11,16 @@ class Rafters::Renderer
   def render(component)
     component.controller = @controller
 
-    if component.options.wrapper?
+    component.execute_callbacks!(:before_render_callbacks)
+
+    result = if component.options.wrapper?
       render_with_wrapper(component)
     else
       render_without_wrapper(component)
+    end
+    
+    result.tap do
+      component.execute_callbacks!(:after_render_callbacks)
     end
   end
 

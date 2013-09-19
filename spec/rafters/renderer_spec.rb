@@ -35,5 +35,21 @@ describe Rafters::Renderer do
       view_context.should_receive(:render).with(file: "/foo", locals: Hashie::Mash.new({ foo: "bar" }))
       subject.render(component)
     end
+
+    context "with before_render callbacks defined on the component" do
+      it "calls the before_render methods before rendering the component" do
+        component.should_receive(:execute_callbacks!).with(:before_render_callbacks)
+        subject.should_receive(:render_without_wrapper).ordered
+        subject.render(component)
+      end
+    end
+
+    context "with after_render callbacks defined on the component" do
+      it "calls the after_render methods before rendering the component" do
+        subject.should_receive(:render_without_wrapper).ordered
+        component.should_receive(:execute_callbacks!).with(:after_render_callbacks).ordered
+        subject.render(component)
+      end
+    end
   end
 end
