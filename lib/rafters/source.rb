@@ -1,11 +1,7 @@
-module Rafters::Source
-  extend ActiveSupport::Concern
+class Rafters::Source
+  attr_accessor :component
 
-  included do
-    attr_accessor :component
-
-    delegate :controller, :settings, to: :component
-  end
+  delegate :controller, :settings, to: :component
 
   def initialize(component)
     @component = component
