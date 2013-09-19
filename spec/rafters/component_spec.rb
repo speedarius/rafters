@@ -2,8 +2,11 @@ require 'spec_helper'
 
 describe Rafters::Component do
   before do
-    Object.send(:remove_const, 'HeadingComponent') if defined?(HeadingComponent)
     class HeadingComponent < Rafters::Component; end
+  end
+
+  after do
+    Object.send(:remove_const, 'HeadingComponent') if defined?(HeadingComponent)
   end
 
   let(:controller) do 
