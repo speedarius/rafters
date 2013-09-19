@@ -11,24 +11,20 @@ class Rafters::Component
   end
 
   def options
-    @options ||= evaluate_options_merge_chain(@local_options).tap do |_options|
-      _options.each do |name, value|
-        _options[name] = value.is_a?(Proc) ? value.call(self) : cast_value_from_string(value)
-      end
+    @options ||= evaluate_options_merge_chain(@local_options).tap do |hash|
+      replace_with_result!(hash, :cast_value_from_string)
     end
   end
 
   def settings
-    @settings ||= evaluate_settings_merge_chain(@local_settings).tap do |_settings|
-      _settings.each do |name, value|
-        _settings[name] = value.is_a?(Proc) ? value.call(self) : cast_value_from_string(value)
-      end
+    @settings ||= evaluate_settings_merge_chain(@local_settings).tap do |hash|
+      replace_with_result!(hash, :cast_value_from_string)
     end
   end
 
   def attributes
     @attributes ||= Hashie::Mash.new.tap do |_attributes|
-      (self.class._attributes || {}).each do |name|
+      default_attributes.each do |name|
         _attributes[name] = send(name)
       end
     end
@@ -43,7 +39,7 @@ class Rafters::Component
   end
 
   def as_json(*args)
-    { identifier: identifier, options: options.as_json(*args), settings: settings.as_json(*args) }
+    { identifier: identifier, options: options.as_json(*args), settings: settings.as_json(*args) }.as_json
   end
 
   def controller(variable_or_method_name)
@@ -56,8 +52,12 @@ class Rafters::Component
     end
   end
 
+  def params
+    controller(:params)
+  end
+
   class << self
-    attr_accessor :_attributes, :_settings, :_default_settings, :_default_options
+    attr_accessor :_attributes, :_settings, :_options
 
     def inherited(base)
       base.option :wrapper, true
@@ -66,8 +66,7 @@ class Rafters::Component
     end
 
     def setting(name, options = {})
-      (self._settings ||= []) << name
-      (self._default_settings ||= {})[name] = options[:default] || nil
+      (self._settings ||= {})[name] = options
     end
 
     def settings(settings = {})
@@ -87,7 +86,7 @@ class Rafters::Component
     end
 
     def option(name, value)
-      (self._default_options ||= {})[name] = value
+      (self._options ||= {})[name] = value
     end
 
     def options(options = {})
@@ -99,55 +98,59 @@ class Rafters::Component
 
   private
 
+  def default_attributes
+    self.class._attributes || {}
+  end
+
   def default_options
-    self.class._default_options || {}
+    self.class._options || {}
   end
 
   def default_settings
-    self.class._default_settings || {}
-  end
-
-  def parameter_options
-    parameters = controller(:params)
-
-    HashWithIndifferentAccess.new.tap do |_options|
-      (parameters[identifier] || {}).each do |key, value|
-        _options[key] = cast_value_from_string(value)
+    {}.tap do |_default_settings|
+      (self.class._settings || {}).each do |name, options|
+        _default_settings[name] = options[:default]
       end
     end
   end
 
-  def parameter_settings
-    HashWithIndifferentAccess.new.tap do |_settings|
-      (parameter_options[:settings] || {}).each do |key, value|
-        _settings[key] = cast_value_from_string(value)
-      end
-    end
+  def param_options
+    HashWithIndifferentAccess.new(params[identifier] || {})
+  end
+
+  def param_settings
+    HashWithIndifferentAccess.new(param_options[:settings] || {})
   end
 
   def evaluate_settings_merge_chain(local_settings)
-    Hashie::Mash.new.tap do |_settings|
-      [default_settings, local_settings, parameter_settings].each do |overrides|
-        _settings.merge!(overrides)
-      end
-    end
+    apply_merge_chain!(default_settings, local_settings, param_settings)
   end
 
   def evaluate_options_merge_chain(local_options)
-    Hashie::Mash.new.tap do |_options|
-      [default_options, local_options, parameter_options].each do |overrides|
-        _options.merge!(overrides)
-      end
+    apply_merge_chain!(default_options, local_options, param_options)
+  end
+
+  def apply_merge_chain!(*links)
+    Hashie::Mash.new.tap do |chain|
+      links.each { |link| chain.merge!(link) }
     end
   end
 
-  def cast_value_from_string(string)
-    if string == "true" || string == "1"
+  def replace_with_result!(hash, method)
+    hash.each do |key, value|
+      hash[key] = send(method, value)
+    end
+  end
+
+  def cast_value_from_string(value)
+    if value == "true" || value == "1"
       return true
-    elsif string == "false" || string == "0" || string == "nil"
+    elsif value == "false" || value == "0" || value == "nil"
       return false
+    elsif value.is_a?(Proc)
+      value.call(self)
     else 
-      return string
+      return value
     end
   end
 end
