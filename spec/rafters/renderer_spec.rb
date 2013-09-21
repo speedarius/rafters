@@ -9,7 +9,7 @@ describe Rafters::Renderer do
       Rafters.stub(:view_paths).and_return(["/path/to/views"])
     end
 
-    it "should add the view paths for all components to the controller" do
+    it "adds the view paths for all components to the controller" do
       expect(controller).to receive(:prepend_view_path).with("/path/to/views")
       Rafters::Renderer.new(controller, view_context)
     end

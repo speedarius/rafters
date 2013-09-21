@@ -246,7 +246,7 @@ describe Rafters::Component do
       expect(subject.source).to be_an_instance_of(FooSource)
     end
 
-    it "should set the source's component delegate to itself" do
+    it "sets the source's component delegate to itself" do
       expect(subject.source.component).to eq(subject)
     end
   end
