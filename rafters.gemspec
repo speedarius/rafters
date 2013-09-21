@@ -25,12 +25,13 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec-rails", "~> 2.14"
   spec.add_development_dependency "yard", "~> 0.8"
   spec.add_development_dependency 'coveralls', "~> 0.6.7"
+  spec.add_development_dependency 'fuubar', '~> 1.2.1'
   spec.add_development_dependency 'guard', '~> 1.8.3'
   spec.add_development_dependency 'guard-rspec', '~> 3.0.3'
   spec.add_development_dependency 'guard-spork', '~> 1.5.1'
   spec.add_development_dependency 'spork', '~> 0.9.2'
 
+  spec.add_dependency "hashie", "~> 2.0.5"
   spec.add_dependency "rails", "> 3.2"
   spec.add_dependency "sprockets", "> 2.2"
-  spec.add_dependency "hashie", "~> 2.0.5"
 end
