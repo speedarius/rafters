@@ -3,6 +3,7 @@ guard 'spork' do
   watch('Gemfile.lock')
   watch('spec/spec_helper.rb')
   watch(%r{features/dummy/})
+  watch(%r{spec/support/})
 end
 
 guard :rspec, cli: "--drb" do
