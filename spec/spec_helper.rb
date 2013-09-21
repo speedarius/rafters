@@ -9,6 +9,7 @@ Spork.prefork do
   SimpleCov.formatter = Coveralls::SimpleCov::Formatter
   SimpleCov.start do
     add_filter 'spec/dummy'
+    add_filter 'lib/rafters/railtie.rb'
   end
 
   ENV["RAILS_ENV"] ||= 'test'
