@@ -80,6 +80,8 @@ class Rafters::Component
     end
 
     def setting(name, options = {})
+      options = options || {}
+
       (self._settings ||= {})[name] = options.delete(:default)
       (self._setting_options ||= {})[name] = options
     end

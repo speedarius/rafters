@@ -356,14 +356,41 @@ describe Rafters::Component do
     end
   end
 
+  describe ".settings" do
+    before do
+      FooBarComponent.settings(foo: nil, bar: nil, baz: nil)
+    end
+
+    it "adds all given settings to the list of available settings" do
+      expect(subject.settings).to have_key(:foo)
+      expect(subject.settings).to have_key(:bar)
+      expect(subject.settings).to have_key(:baz)
+    end
+  end
+
   describe ".attribute" do
     before do
-      FooBarComponent.send(:define_method, :foo, -> { "bar" })
+      FooBarComponent.send(:define_method, :foo, -> { "foo" })
       FooBarComponent.attribute(:foo)
     end
 
+    it "adds the provided method name to the list of attributes" do
+      expect(subject.attributes.foo).to eq("foo")
+    end
+  end
+
+  describe ".attributes" do
+    before do
+      FooBarComponent.send(:define_method, :foo, -> { "foo" })
+      FooBarComponent.send(:define_method, :bar, -> { "bar" })
+      FooBarComponent.send(:define_method, :baz, -> { "baz" })
+      FooBarComponent.attributes(:foo, :bar, :baz)
+    end
+
     it "adds the provided method names to the list of attributes" do
-      expect(subject.attributes.foo).to eq("bar")
+      expect(subject.attributes).to have_key(:foo)
+      expect(subject.attributes).to have_key(:bar)
+      expect(subject.attributes).to have_key(:baz)
     end
   end
 
@@ -374,6 +401,17 @@ describe Rafters::Component do
 
     it "sets the value of the option to the provided value" do
       expect(subject.options.wrapper).to be_false
+    end
+  end
+
+  describe ".options" do
+    before do
+      FooBarComponent.options(wrapper: false, view_name: "lorem")
+    end
+
+    it "sets the values of the given options to the provided value" do
+      expect(subject.options.wrapper).to be_false
+      expect(subject.options.view_name).to eq("lorem")
     end
   end
 
