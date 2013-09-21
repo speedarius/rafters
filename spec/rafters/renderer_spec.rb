@@ -51,5 +51,18 @@ describe Rafters::Renderer do
         subject.render(component)
       end
     end
+
+    context "with a component that has the wrapper disabled" do
+      before do
+        component.stub(:options).and_return {
+          Hashie::Mash.new({ wrapper: false, view_name: "foo" })
+        }
+      end
+
+      it "doesn't render a div wrapper around the resulting html" do
+        expect(subject).not_to receive(:render_with_wrapper)
+        subject.render(component)
+      end
+    end
   end
 end
