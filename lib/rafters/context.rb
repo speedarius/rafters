@@ -6,11 +6,6 @@ module Rafters::Context
     alias_method_chain :render, :component
   end
 
-  def component_attributes(name, options = {})
-    component = component(name, options)
-    component.as_json
-  end
-
   def render_component(name, options = {})
     component = component(name, options)
     component_renderer.render(component)
@@ -22,7 +17,6 @@ module Rafters::Context
 
       respond_to do |format|
         format.html { render_without_component(text: render_component(component, options)) }
-        format.json { render_without_component(json: component_attributes(component, options)) }
       end
     else
       render_without_component(*args, &block)
