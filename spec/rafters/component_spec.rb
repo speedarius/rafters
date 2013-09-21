@@ -2,11 +2,11 @@ require 'spec_helper'
 
 describe Rafters::Component do
   before do
-    class HeadingComponent < Rafters::Component; end
+    class FooBarComponent < Rafters::Component; end
   end
 
   after do
-    Object.send(:remove_const, 'HeadingComponent') if defined?(HeadingComponent)
+    Object.send(:remove_const, 'FooBarComponent') if defined?(FooBarComponent)
   end
 
   let(:controller) do 
@@ -14,15 +14,15 @@ describe Rafters::Component do
   end
 
   subject do 
-    component = HeadingComponent.new("heading")
+    component = FooBarComponent.new("heading")
     component.controller = controller
     component
   end
 
   describe "#excute_callbacks!" do
     before do
-      HeadingComponent.before_render(:foo)
-      HeadingComponent.before_render(:bar)
+      FooBarComponent.before_render(:foo)
+      FooBarComponent.before_render(:bar)
     end
 
     it "calls all methods in the provided callback stack" do
@@ -34,27 +34,27 @@ describe Rafters::Component do
 
   describe "#options" do
     it "replaces proc values with their result" do
-      HeadingComponent.option :wrapper, lambda { |component| component.is_a?(Rafters::Component) }
+      FooBarComponent.option :wrapper, lambda { |component| component.is_a?(Rafters::Component) }
       expect(subject.options.wrapper).to be_true
     end
 
     it "replaces truthy string values with boolean true" do
-      HeadingComponent.option :wrapper, "true"
+      FooBarComponent.option :wrapper, "true"
       expect(subject.options.wrapper).to be_true
     end
 
     it "replaces falsey string values with boolean false" do
-      HeadingComponent.option :wrapper, "false"
+      FooBarComponent.option :wrapper, "false"
       expect(subject.options.wrapper).to be_false
     end
 
     context "with default options" do
       before do
-        HeadingComponent.option :view_name, "heading_component"
+        FooBarComponent.option :view_name, "foo_bar_component"
       end
 
       it "returns the default values for those options" do
-        expect(subject.options.view_name).to eq("heading_component")
+        expect(subject.options.view_name).to eq("foo_bar_component")
       end
 
       context "and local options" do
@@ -123,23 +123,23 @@ describe Rafters::Component do
 
   describe "#settings" do
     it "replaces proc values with their result" do
-      HeadingComponent.setting :title, default: lambda { |component| component.class.name.titleize }
-      expect(subject.settings.title).to eq("Heading Component")
+      FooBarComponent.setting :title, default: lambda { |component| component.class.name.titleize }
+      expect(subject.settings.title).to eq("Foo Bar Component")
     end
 
     it "replaces truthy string values with boolean true" do
-      HeadingComponent.setting :published, default: "true"
+      FooBarComponent.setting :published, default: "true"
       expect(subject.settings.published).to be_true
     end
 
     it "replaces falsey string values with boolean false" do
-      HeadingComponent.setting :published, default: "false"
+      FooBarComponent.setting :published, default: "false"
       expect(subject.settings.published).to be_false
     end
 
     context "with required settings" do
       before do
-        HeadingComponent.setting :title, required: true
+        FooBarComponent.setting :title, required: true
       end
 
       it "raises an error if the required setting is nil" do
@@ -154,7 +154,7 @@ describe Rafters::Component do
 
     context "with default settings" do
       before do
-        HeadingComponent.setting :title, default: "Heading Component"
+        FooBarComponent.setting :title, default: "Heading Component"
       end
 
       it "returns the default values for those settings" do
@@ -227,8 +227,8 @@ describe Rafters::Component do
 
   describe "#attributes" do
     before do
-      HeadingComponent.send(:define_method, :title, -> { "Heading Component" })
-      HeadingComponent.attribute(:title)
+      FooBarComponent.send(:define_method, :title, -> { "Heading Component" })
+      FooBarComponent.attribute(:title)
     end
 
     it "returns the values of defined attributes" do
@@ -253,9 +253,9 @@ describe Rafters::Component do
 
   describe "#locals" do
     before do
-      HeadingComponent.send(:define_method, :title, -> { "Heading Component" })
-      HeadingComponent.attribute(:title)
-      HeadingComponent.setting(:foo, default: "bar")
+      FooBarComponent.send(:define_method, :title, -> { "Heading Component" })
+      FooBarComponent.attribute(:title)
+      FooBarComponent.setting(:foo, default: "bar")
     end
 
     it "includes all defined attributes for the component" do
@@ -273,8 +273,8 @@ describe Rafters::Component do
 
   describe "#as_json" do
     before do
-      HeadingComponent.option(:source_name, "FooSource")
-      HeadingComponent.setting(:foo, default: "bar")
+      FooBarComponent.option(:source_name, "FooSource")
+      FooBarComponent.setting(:foo, default: "bar")
     end
 
     it "includes the component's identifier" do
@@ -282,7 +282,7 @@ describe Rafters::Component do
     end
 
     it "includes the component's options" do
-      expect(subject.as_json["options"]).to eq({ source_name: "FooSource", view_name: "heading_component", wrapper: true }.stringify_keys!)
+      expect(subject.as_json["options"]).to eq({ source_name: "FooSource", view_name: "foo_bar_component", wrapper: true }.stringify_keys!)
     end
 
     it "includes the component's settings" do
@@ -338,7 +338,7 @@ describe Rafters::Component do
 
   describe ".setting" do
     before do
-      HeadingComponent.setting(:published)
+      FooBarComponent.setting(:published)
     end
 
     it "adds the provided setting name to the list of available settings" do
@@ -347,7 +347,7 @@ describe Rafters::Component do
 
     context "when provided a default" do
       before do
-        HeadingComponent.setting(:archived, default: false)
+        FooBarComponent.setting(:archived, default: false)
       end
 
       it "adds the default to the list of default settings" do
@@ -358,8 +358,8 @@ describe Rafters::Component do
 
   describe ".attribute" do
     before do
-      HeadingComponent.send(:define_method, :foo, -> { "bar" })
-      HeadingComponent.attribute(:foo)
+      FooBarComponent.send(:define_method, :foo, -> { "bar" })
+      FooBarComponent.attribute(:foo)
     end
 
     it "adds the provided method names to the list of attributes" do
@@ -369,7 +369,7 @@ describe Rafters::Component do
 
   describe ".option" do
     before do
-      HeadingComponent.option(:wrapper, false)
+      FooBarComponent.option(:wrapper, false)
     end
 
     it "sets the value of the option to the provided value" do
@@ -379,7 +379,7 @@ describe Rafters::Component do
 
   describe ".before_render" do
     before do
-      HeadingComponent.before_render(:foo)
+      FooBarComponent.before_render(:foo)
     end
 
     it "adds the given method to the list of methods that execute before rendering" do
@@ -389,7 +389,7 @@ describe Rafters::Component do
 
   describe ".after_render" do
     before do
-      HeadingComponent.after_render(:foo)
+      FooBarComponent.after_render(:foo)
     end
 
     it "adds the given method to the list of methods that execute after rendering" do

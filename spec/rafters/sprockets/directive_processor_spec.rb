@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'rafters/railtie'
 
 describe Rafters::DirectiveProcessor do
   subject { Sprockets::Environment.new }
