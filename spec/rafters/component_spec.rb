@@ -26,8 +26,8 @@ describe Rafters::Component do
     end
 
     it "calls all methods in the provided callback stack" do
-      subject.should_receive(:foo).ordered
-      subject.should_receive(:bar).ordered
+      expect(subject).to receive(:foo).ordered
+      expect(subject).to receive(:bar).ordered
       subject.execute_callbacks!(:before_render_callbacks)
     end
   end
@@ -35,17 +35,17 @@ describe Rafters::Component do
   describe "#options" do
     it "replaces proc values with their result" do
       HeadingComponent.option :wrapper, lambda { |component| component.is_a?(Rafters::Component) }
-      subject.options.wrapper.should === true
+      expect(subject.options.wrapper).to be_true
     end
 
     it "replaces truthy string values with boolean true" do
       HeadingComponent.option :wrapper, "true"
-      subject.options.wrapper.should === true
+      expect(subject.options.wrapper).to be_true
     end
 
     it "replaces falsey string values with boolean false" do
       HeadingComponent.option :wrapper, "false"
-      subject.options.wrapper.should === false
+      expect(subject.options.wrapper).to be_false
     end
 
     context "with default options" do
@@ -54,7 +54,7 @@ describe Rafters::Component do
       end
 
       it "returns the default values for those options" do
-        subject.options.view_name.should == "heading_component"
+        expect(subject.options.view_name).to eq("heading_component")
       end
 
       context "and local options" do
@@ -63,7 +63,7 @@ describe Rafters::Component do
         end
 
         it "returns the local values for those options" do
-          subject.options.view_name.should == "foo_component"
+          expect(subject.options.view_name).to eq("foo_component")
         end
       end
 
@@ -77,7 +77,7 @@ describe Rafters::Component do
         end
 
         it "returns the param values for those options" do
-          subject.options.view_name.should == "baz_component"
+          expect(subject.options.view_name).to eq("baz_component")
         end
       end
     end
@@ -88,7 +88,7 @@ describe Rafters::Component do
       end
 
       it "returns the locally defined values for those options" do
-        subject.options.view_name.should == "lipsum_component"
+        expect(subject.options.view_name).to eq("lipsum_component")
       end
 
       context "and param options" do
@@ -101,7 +101,7 @@ describe Rafters::Component do
         end
 
         it "returns the param values for those options" do
-          subject.options.view_name.should == "dolor_component"
+          expect(subject.options.view_name).to eq("dolor_component")
         end
       end
     end
@@ -116,7 +116,7 @@ describe Rafters::Component do
       end
 
       it "returns the param values for those options" do
-        subject.options.view_name.should == "bacon_component"
+        expect(subject.options.view_name).to eq("bacon_component")
       end
     end
   end
@@ -124,17 +124,17 @@ describe Rafters::Component do
   describe "#settings" do
     it "replaces proc values with their result" do
       HeadingComponent.setting :title, default: lambda { |component| component.class.name.titleize }
-      subject.settings.title.should === "Heading Component"
+      expect(subject.settings.title).to eq("Heading Component")
     end
 
     it "replaces truthy string values with boolean true" do
       HeadingComponent.setting :published, default: "true"
-      subject.settings.published.should === true
+      expect(subject.settings.published).to be_true
     end
 
     it "replaces falsey string values with boolean false" do
       HeadingComponent.setting :published, default: "false"
-      subject.settings.published.should === false
+      expect(subject.settings.published).to be_false
     end
 
     context "with required settings" do
@@ -143,12 +143,12 @@ describe Rafters::Component do
       end
 
       it "raises an error if the required setting is nil" do
-        -> { subject.settings }.should raise_error(Rafters::Component::SettingRequired)
+        expect { subject.settings }.to raise_error(Rafters::Component::SettingRequired)
       end
 
       it "does not raise an error if the required setting is not nil" do
         subject.local_settings[:title] = "Foo Bar"
-        -> { subject.settings }.should_not raise_error(Rafters::Component::SettingRequired)
+        expect { subject.settings }.not_to raise_error(Rafters::Component::SettingRequired)
       end
     end
 
@@ -158,7 +158,7 @@ describe Rafters::Component do
       end
 
       it "returns the default values for those settings" do
-        subject.settings.title.should == "Heading Component"
+        expect(subject.settings.title).to eq("Heading Component")
       end
 
       context "and local settings" do
@@ -167,7 +167,7 @@ describe Rafters::Component do
         end
 
         it "returns the local values for those settings" do
-          subject.settings.title.should == "Foo Heading"
+          expect(subject.settings.title).to eq("Foo Heading")
         end
       end
 
@@ -181,7 +181,7 @@ describe Rafters::Component do
         end
 
         it "returns the param values for those settings" do
-          subject.settings.title.should == "Baz Component"
+          expect(subject.settings.title).to eq("Baz Component")
         end
       end
     end
@@ -192,7 +192,7 @@ describe Rafters::Component do
       end
 
       it "returns the locally defined values for those settings" do
-        subject.settings.title.should == "Lorem Component"
+        expect(subject.settings.title).to eq("Lorem Component")
       end
 
       context "and param settings" do
@@ -205,7 +205,7 @@ describe Rafters::Component do
         end
 
         it "returns the param values for those settings" do
-          subject.settings.title.should == "Dolor Component"
+          expect(subject.settings.title).to eq("Dolor Component")
         end
       end
     end
@@ -220,7 +220,7 @@ describe Rafters::Component do
       end
 
       it "returns the param values for those settings" do
-        subject.settings.title.should == "Bacon Component"
+        expect(subject.settings.title).to eq("Bacon Component")
       end
     end
   end
@@ -228,11 +228,11 @@ describe Rafters::Component do
   describe "#attributes" do
     before do
       HeadingComponent.send(:define_method, :title, -> { "Heading Component" })
-      HeadingComponent.attribute :title
+      HeadingComponent.attribute(:title)
     end
 
     it "returns the values of defined attributes" do
-      subject.attributes.title.should == "Heading Component"
+      expect(subject.attributes.title).to eq("Heading Component")
     end
   end
 
@@ -243,11 +243,11 @@ describe Rafters::Component do
     end
 
     it "returns an instance of the provided source name's class" do
-      subject.source.should be_an_instance_of(FooSource)
+      expect(subject.source).to be_an_instance_of(FooSource)
     end
 
     it "should set the source's component delegate to itself" do
-      subject.source.component.should == subject
+      expect(subject.source.component).to eq(subject)
     end
   end
 
@@ -259,15 +259,15 @@ describe Rafters::Component do
     end
 
     it "includes all defined attributes for the component" do
-      subject.locals[:title].should == "Heading Component"
+      expect(subject.locals[:title]).to eq("Heading Component")
     end
 
     it "includes settings for the component" do
-      subject.locals[:settings].should == Hashie::Mash.new(foo: "bar")
+      expect(subject.locals[:settings]).to eq(Hashie::Mash.new(foo: "bar"))
     end
 
     it "includes the component" do
-      subject.locals[:component].should == subject
+      expect(subject.locals[:component]).to eq(subject)
     end
   end
 
@@ -278,15 +278,15 @@ describe Rafters::Component do
     end
 
     it "includes the component's identifier" do
-      subject.as_json["identifier"].should == subject.identifier
+      expect(subject.as_json["identifier"]).to eq(subject.identifier)
     end
 
     it "includes the component's options" do
-      subject.as_json["options"].should == Hashie::Mash.new(source_name: "FooSource", view_name: "heading_component", wrapper: true)
+      expect(subject.as_json["options"]).to eq({ source_name: "FooSource", view_name: "heading_component", wrapper: true }.stringify_keys!)
     end
 
     it "includes the component's settings" do
-      subject.as_json["settings"].should == Hashie::Mash.new(foo: "bar")
+      expect(subject.as_json["settings"]).to eq({ foo: "bar" }.stringify_keys!)
     end
   end
 
@@ -297,7 +297,7 @@ describe Rafters::Component do
       end
 
       it "returns the instance variable's value" do
-        subject.controller(:foo).should == "bar"
+        expect(subject.controller(:foo)).to eq("bar")
       end
     end
 
@@ -307,13 +307,13 @@ describe Rafters::Component do
       end
 
       it "returns the instance method's value" do
-        subject.controller(:bar).should == "baz"
+        expect(subject.controller(:bar)).to eq("baz")
       end
     end
 
     context "when the argument is not defined in the controller" do
       it "returns nil" do
-        subject.controller(:baz).should == nil
+        expect(subject.controller(:baz)).to be_nil
       end
     end
   end
@@ -324,15 +324,15 @@ describe Rafters::Component do
     end
 
     it "sets the default wrapper option" do
-      FooComponent._options[:wrapper].should == true
+      expect(FooComponent._options[:wrapper]).to be_true
     end
 
     it "sets the default view_name option" do
-      FooComponent._options[:view_name].should == "foo_component"
+      expect(FooComponent._options[:view_name]).to eq("foo_component")
     end
 
     it "sets the default source_name option" do
-      FooComponent._options[:source_name] == nil
+      expect(FooComponent._options[:source_name]).to be_nil
     end
   end
 
@@ -342,7 +342,7 @@ describe Rafters::Component do
     end
 
     it "adds the provided setting name to the list of available settings" do
-      subject.settings.keys.should include("published")
+      expect(subject.settings).to have_key("published")
     end
 
     context "when provided a default" do
@@ -351,7 +351,7 @@ describe Rafters::Component do
       end
 
       it "adds the default to the list of default settings" do
-        subject.settings.archived.should == false
+        expect(subject.settings.archived).to be_false
       end
     end
   end
@@ -363,7 +363,7 @@ describe Rafters::Component do
     end
 
     it "adds the provided method names to the list of attributes" do
-      subject.attributes.foo.should == "bar"
+      expect(subject.attributes.foo).to eq("bar")
     end
   end
 
@@ -373,7 +373,7 @@ describe Rafters::Component do
     end
 
     it "sets the value of the option to the provided value" do
-      subject.options.wrapper == false
+      expect(subject.options.wrapper).to be_false
     end
   end
 
@@ -383,7 +383,7 @@ describe Rafters::Component do
     end
 
     it "adds the given method to the list of methods that execute before rendering" do
-      subject.send(:before_render_callbacks).should include(:foo)
+      expect(subject.send(:before_render_callbacks)).to match_array([:foo])
     end
   end
 
@@ -393,7 +393,7 @@ describe Rafters::Component do
     end
 
     it "adds the given method to the list of methods that execute after rendering" do
-      subject.send(:after_render_callbacks).should include(:foo)
+      expect(subject.send(:after_render_callbacks)).to match_array([:foo])
     end
   end
 end
