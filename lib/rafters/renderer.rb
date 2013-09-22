@@ -1,4 +1,6 @@
 class Rafters::Renderer
+  attr_reader :controller, :view_context
+
   def initialize(controller, view_context)
     @controller = controller
     @view_context = view_context
@@ -21,19 +23,24 @@ class Rafters::Renderer
     
     result.tap do
       component.execute_callbacks!(:after_render_callbacks)
+      store(component)
     end
   end
 
   private
 
   def render_with_wrapper(component)
-    @view_context.content_tag(:div, render_without_wrapper(component), { 
+    view_context.content_tag(:div, render_without_wrapper(component), { 
       class: "component #{component.options.view_name.dasherize}", 
       id: component.identifier
     })
   end
 
   def render_without_wrapper(component)
-    @view_context.render(file: "/#{component.options.view_name}", locals: component.locals)
+    view_context.render(file: "/#{component.options.view_name}", locals: component.locals)
+  end
+
+  def store(component)
+    (controller.rendered_components ||= []) << component
   end
 end
