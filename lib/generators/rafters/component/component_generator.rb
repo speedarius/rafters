@@ -15,6 +15,8 @@ class Rafters::ComponentGenerator < Rails::Generators::NamedBase
 
   def create_gitkeeps
     create_file "#{base_directory}/assets/images/.gitkeep"
+    create_file "#{base_directory}/assets/stylesheets/.gitkeep"
+    create_file "#{base_directory}/assets/javascripts/.gitkeep"
   end
 
   def create_files
