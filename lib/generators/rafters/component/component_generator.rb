@@ -1,5 +1,7 @@
 class Rafters::ComponentGenerator < Rails::Generators::NamedBase
   source_root File.expand_path("../templates", __FILE__)
+  class_option :stylesheet, type: :boolean, default: true, description: "Include stylesheet file"
+  class_option :javascript, type: :boolean, default: true, description: "Include Javascript file"
 
   def create_directories
     empty_directory "#{base_directory}"
@@ -17,8 +19,8 @@ class Rafters::ComponentGenerator < Rails::Generators::NamedBase
 
   def create_files
     template "component.rb.erb", "#{base_directory}/#{file_name}_component.rb"
-    template "assets/javascripts/component.js.erb", "#{base_directory}/assets/javascripts/#{file_name}_component.js"
-    template "assets/stylesheets/component.scss.erb", "#{base_directory}/assets/stylesheets/#{file_name}_component.scss"
+    template "assets/javascripts/component.js.erb", "#{base_directory}/assets/javascripts/#{file_name}_component.js" if options.javascript?
+    template "assets/stylesheets/component.scss.erb", "#{base_directory}/assets/stylesheets/#{file_name}_component.scss" if options.stylesheet?
     template "views/component.html.erb", "#{base_directory}/views/#{file_name}_component.html.erb"
   end
 
