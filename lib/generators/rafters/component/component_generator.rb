@@ -24,7 +24,7 @@ class Rafters::ComponentGenerator < Rails::Generators::NamedBase
     template "assets/javascripts/component.js.erb", "#{base_directory}/assets/javascripts/#{file_name}_component.js" if options.javascript?
     template "assets/stylesheets/component.scss.erb", "#{base_directory}/assets/stylesheets/#{file_name}_component.scss" if options.stylesheet?
     template "views/component.html.erb", "#{base_directory}/views/#{file_name}_component.html.erb"
-    template "spec.rb.erb", "spec/components/#{file_name}_component_spec.rb"
+    template "spec.rb.erb", "spec/components/#{file_name}_component_spec.rb" if defined?(RSpec)
   end
 
   private
