@@ -1,7 +1,13 @@
 module Rafters::ComponentExampleGroup
   extend ActiveSupport::Concern
-  include RSpec::Rails::RailsExampleGroup
-  include ActionView::TestCase::Behavior
+
+  if defined?(ActionView::TestCase::Behavior)
+    include ActionView::TestCase::Behavior
+  end
+
+  if defined?(RSpec::Rails)
+    include RSpec::Rails::RailsExampleGroup
+  end
 
   included do
     metadata[:type] = :component

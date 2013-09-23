@@ -7,6 +7,7 @@ class Rafters::InstallGenerator < Rails::Generators::Base
 
   def create_directories
     empty_directory "app/components"
+    empty_directory "spec/components"
   end
 
   def add_asset_requires
