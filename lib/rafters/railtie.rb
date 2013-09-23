@@ -18,6 +18,17 @@ class Rafters::Railtie < Rails::Railtie
     app.config.autoload_paths += Dir[app.root.join("app", "components", "*/")]
   end
 
+  initializer "rafters.add_example_groups" do |app|
+    if defined?(RSpec)
+      RSpec.configuration.include(Rafters::ComponentExampleGroup, {
+        type: :component, 
+        example_group: {
+          file_path: %r(spec/components)
+        }
+      })
+    end
+  end
+
   config.after_initialize do |app|
     replace_preprocessor(app, 'text/css')
     replace_preprocessor(app, 'application/javascript')

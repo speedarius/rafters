@@ -29,12 +29,3 @@ module Rafters
 end
 
 ActionController::Base.send(:include, Rafters::Context)
-
-if defined?(RSpec)
-  RSpec.configuration.include(Rafters::ComponentExampleGroup, {
-    type: :component, 
-    example_group: {
-      file_path: %r(spec/components)
-    }
-  })
-end

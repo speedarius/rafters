@@ -1,13 +1,8 @@
+require 'rspec/rails'
+
 module Rafters::ComponentExampleGroup
   extend ActiveSupport::Concern
-
-  if defined?(ActionView::TestCase::Behavior)
-    include ActionView::TestCase::Behavior
-  end
-
-  if defined?(RSpec::Rails)
-    include RSpec::Rails::RailsExampleGroup
-  end
+  include RSpec::Rails::ViewExampleGroup
 
   included do
     metadata[:type] = :component
