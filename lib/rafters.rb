@@ -11,10 +11,6 @@ module Rafters
     autoload :Context
     autoload :Renderer
     autoload :Source
-
-    autoload_under 'rspec' do
-      autoload :ComponentExampleGroup
-    end
   end
 
   def self.setup
