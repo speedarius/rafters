@@ -150,7 +150,7 @@ class Rafters::Component
   end
 
   def sources
-    self.class._sources
+    self.class._sources || {}
   end
 
   def merge_chain(*links)
