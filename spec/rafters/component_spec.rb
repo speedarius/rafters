@@ -239,7 +239,8 @@ describe Rafters::Component do
   describe "#source" do
     before do
       class FooSource < Rafters::Source; end
-      subject.local_options = { source_name: "FooSource" }
+      FooBarComponent.register_source(:foo, 'FooSource')
+      subject.local_options = { source_name: "foo" }
     end
 
     it "returns an instance of the provided source name's class" do
@@ -248,6 +249,16 @@ describe Rafters::Component do
 
     it "sets the source's component delegate to itself" do
       expect(subject.source.component).to eq(subject)
+    end
+
+    context "with an unregistered source" do
+      before do
+        subject.local_options = { source_name: "bar" }
+      end
+
+      it "raises an error" do
+        expect { subject.source }.to raise_error(Rafters::Component::UnknownSource)
+      end
     end
   end
 

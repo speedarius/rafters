@@ -31,7 +31,10 @@ class Rafters::Component
   end
 
   def source
-    @source ||= options.source_name ? options.source_name.constantize.new(self) : nil
+    @source ||= if options.source_name
+      raise UnknownSource, "#{options.source_name} has not be registered" unless sources.has_key?(options.source_name.to_s)
+      sources[options.source_name.to_s].constantize.new(self)
+    end
   end
 
   def locals
@@ -63,7 +66,7 @@ class Rafters::Component
   end
 
   class << self
-    attr_accessor :_attributes, :_settings, :_setting_options, :_options, :_before_render_callbacks, :_after_render_callbacks
+    attr_accessor :_attributes, :_settings, :_setting_options, :_options, :_before_render_callbacks, :_after_render_callbacks, :_sources
 
     def inherited(base)
       base.option(:wrapper, true)
@@ -105,6 +108,10 @@ class Rafters::Component
     def options(options = {})
       options.each { |name, value| option(name, value) }
     end
+
+    def register_source(name, klass)
+      (self._sources ||= {})[name.to_s] = klass
+    end
   end
 
   private
@@ -141,6 +148,10 @@ class Rafters::Component
     param_options[:settings] || {}
   end
 
+  def sources
+    self.class._sources
+  end
+
   def merge_chain(*links)
     {}.tap do |chain|
       links.each do |link|
@@ -174,4 +185,5 @@ class Rafters::Component
   end
 
   class SettingRequired < StandardError; end
+  class UnknownSource < StandardError; end
 end
