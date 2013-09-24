@@ -32,8 +32,9 @@ class Rafters::Component
 
   def source
     @source ||= if options.source_name
-      raise UnknownSource, "#{options.source_name} has not be registered" unless sources.has_key?(options.source_name.to_s)
-      sources[options.source_name.to_s].constantize.new(self)
+      source_klass = sources[options.source_name.to_s]
+      raise UnknownSource, "#{options.source_name} has not be registered" if source_klass.nil?
+      source_klass.is_a?(String) ? source_klass.constantize.new(self) : source_klass.new(self)
     end
   end
 
