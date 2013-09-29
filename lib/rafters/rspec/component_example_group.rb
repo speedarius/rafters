@@ -39,7 +39,7 @@ module Rafters::ComponentExampleGroup
     def controller(base_class = nil, &body)
       base_class ||= ApplicationController
 
-      metadata[:controller] = Class.new(base_class) do
+      metadata[:controller] ||= Class.new(base_class) do
         def self.name; "AnonymousController"; end
       end
 
