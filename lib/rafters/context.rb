@@ -2,8 +2,8 @@ module Rafters::Context
   extend ActiveSupport::Concern
 
   included do
-    attr_accessor :rendered_components
-    helper_method :rendered_components
+    attr_reader :components
+    helper_method :components_for_action
     helper_method :render_component
     alias_method_chain :render, :component
   end
@@ -25,6 +25,22 @@ module Rafters::Context
     end
   end
 
+  def components
+    @components ||= []
+  end
+
+  def rendered_components_map
+    @@rendered_components_map ||= Hash.new({})
+  end
+
+  def components_for_action
+    rendered_components_map[params[:controller]][params[:action]] ||= []
+  end
+
+  def components_for_action=(ary)
+    rendered_components_map[params[:controller]][params[:action]] = ary
+  end
+
   private
 
   def component_renderer
@@ -34,5 +50,6 @@ module Rafters::Context
   def component(name, options = {})
     component_klass = "#{name}_component".classify.constantize
     component = component_klass.new(options.delete(:as), options)
+    components.select { |c| c == component } || component
   end
 end
