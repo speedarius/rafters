@@ -35,7 +35,7 @@ module Rafters::Context
   end
 
   def components_for_action
-    rendered_components_map[controller_name][action_name] ||= []
+    rendered_components_map[controller_name][action_name] ||= {}
   end
 
   private
