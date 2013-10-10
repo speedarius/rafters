@@ -329,35 +329,6 @@ describe Rafters::Component do
     end
   end
 
-  describe "#==" do
-    it "returns false if the passed object is not a Rafters::Component" do
-      expect(subject ==(Object.new)).to be_false
-    end
-
-    it "returns false if the passed object does not have the same identifier" do
-      other = Rafters::Component.new(subject.identifier, subject.local_options.merge(settings: subject.local_settings))
-      other.identifier = subject.identifier.reverse
-      expect(subject == other).to be_false
-    end
-
-    it "returns false if the passed object does not have the same local options" do
-      other = Rafters::Component.new(subject.identifier, subject.local_options.merge(settings: subject.local_settings))
-      other.local_options[:foo] = 'bar'
-      expect(subject == other).to be_false
-    end
-
-    it "returns false if the passed object does not have the same local settings" do
-      other = Rafters::Component.new(subject.identifier, subject.local_options.merge(settings: subject.local_settings.clone))
-      other.local_settings[:foo] = 'bar'
-      expect(subject == other).to be_false
-    end
-
-    it "returns true if the passed object is a Rafters::Component, has the same identifier, the same local options, and the same local settings" do
-      other = Rafters::Component.new(subject.identifier, subject.local_options.merge(settings: subject.local_settings))
-      expect(subject == other).to be_true
-    end
-  end
-
   describe "when subclassed" do
     before do
       class FooComponent < Rafters::Component; end

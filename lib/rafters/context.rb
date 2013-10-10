@@ -2,6 +2,8 @@ module Rafters::Context
   extend ActiveSupport::Concern
 
   included do
+    attr_accessor :rendered_components
+    helper_method :rendered_components
     helper_method :components_for_action
     helper_method :render_component
     alias_method_chain :render, :component

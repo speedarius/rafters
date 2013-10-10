@@ -66,10 +66,6 @@ class Rafters::Component
     end
   end
 
-  def ==(other)
-    other.is_a?(Rafters::Component) && self.identifier == other.identifier && self.local_options == other.local_options && self.local_settings == other.local_settings
-  end
-
   class << self
     attr_accessor :_attributes, :_settings, :_setting_options, :_options, :_before_render_callbacks, :_after_render_callbacks, :_sources
 

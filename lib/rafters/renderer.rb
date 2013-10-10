@@ -42,5 +42,6 @@ class Rafters::Renderer
 
   def store(component)
     controller.components_for_action << { klass: component.class, identifier: component.identifier, options: component.options }
+    (controller.rendered_components ||= []) << component
   end
 end
