@@ -33,11 +33,11 @@ module Rafters::Context
   end
 
   def components_for_action
-    rendered_components_map[params[:controller]][params[:action]] ||= []
+    rendered_components_map[controller_name][action_name] ||= []
   end
 
   def components_for_action=(ary)
-    rendered_components_map[params[:controller]][params[:action]] = ary
+    rendered_components_map[controller_name][action_name] = ary
   end
 
   private
