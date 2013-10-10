@@ -2,7 +2,6 @@ module Rafters::Context
   extend ActiveSupport::Concern
 
   included do
-    attr_reader :components
     helper_method :components_for_action
     helper_method :render_component
     alias_method_chain :render, :component
@@ -25,8 +24,8 @@ module Rafters::Context
     end
   end
 
-  def components
-    @components ||= []
+  def initialized_components
+    @initialized_components ||= []
   end
 
   def rendered_components_map
@@ -50,6 +49,6 @@ module Rafters::Context
   def component(name, options = {})
     component_klass = "#{name}_component".classify.constantize
     component = component_klass.new(options.delete(:as), options)
-    components.select { |c| c == component } || component
+    self.initialized_components.find { |c| c == component } || component
   end
 end
