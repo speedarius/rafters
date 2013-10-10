@@ -24,14 +24,14 @@ describe Rafters::Context do
     context "previously initialized component" do
       it "renders the previously initialized component" do
         expect(renderer).to receive(:render).with(component)
-        controller.initialized_components << component
+        controller.initialized_components[component.identifier] = component
         controller.render_component(:foo, as: "foo")
       end
     end
 
     context "with options" do
       it "renders the provided component with the given options" do
-        expect(FooComponent).to receive(:new).with("foo", { settings: { test: true } })
+        expect(FooComponent).to receive(:new).with("foo", { settings: { test: true } }).and_return(component)
         controller.render_component(:foo, { as: "foo", settings: { test: true } })
       end
     end

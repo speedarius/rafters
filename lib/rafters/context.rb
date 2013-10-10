@@ -25,7 +25,7 @@ module Rafters::Context
   end
 
   def initialized_components
-    @initialized_components ||= []
+    @initialized_components ||= {}
   end
 
   def rendered_components_map
@@ -49,6 +49,6 @@ module Rafters::Context
   def component(name, options = {})
     component_klass = "#{name}_component".classify.constantize
     component = component_klass.new(options.delete(:as), options)
-    self.initialized_components.find { |c| c == component } || component
+    self.initialized_components[component.identifier] || component
   end
 end
