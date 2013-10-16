@@ -20,10 +20,9 @@ class Rafters::Renderer
     else
       render_without_wrapper(component)
     end
-    
+
     result.tap do
       component.execute_callbacks!(:after_render_callbacks)
-      store(component)
     end
   end
 
@@ -38,10 +37,5 @@ class Rafters::Renderer
 
   def render_without_wrapper(component)
     view_context.render(file: "/#{component.options.view_name}", locals: component.locals)
-  end
-
-  def store(component)
-    controller.components_for_action[component.identifier] = { klass: component.class, options: component.local_options.merge(settings: component.local_settings) }
-    (controller.rendered_components ||= []) << component
   end
 end
