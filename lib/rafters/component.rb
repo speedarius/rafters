@@ -46,11 +46,11 @@ class Rafters::Component
     { identifier: identifier, options: options.as_json(*args), settings: settings.as_json(*args) }.as_json
   end
 
-  def controller(variable_or_method_name)
+  def controller(variable_or_method_name, *args)
     if @controller.instance_variable_defined?("@#{variable_or_method_name}")
       @controller.instance_variable_get("@#{variable_or_method_name}")
     elsif @controller.respond_to?(variable_or_method_name, true)
-      @controller.send(variable_or_method_name)
+      @controller.send(variable_or_method_name, *args)
     else
       nil
     end
