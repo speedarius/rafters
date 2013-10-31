@@ -174,10 +174,12 @@ class Rafters::Component
   end
 
   def coerce_value(value)
-    if value == "true" || value == "1"
+    if value == "true"
       return true
-    elsif value == "false" || value == "0" || value == "nil"
+    elsif value == "false"
       return false
+    elsif value == "nil"
+      return nil
     elsif value.is_a?(Proc)
       value.call(self)
     else 
