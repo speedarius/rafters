@@ -23,8 +23,6 @@ module Rafters::Context
     end
   end
 
-  private
-
   def component_renderer
     @_component_renderer ||= Rafters::Renderer.new(self, view_context)
   end
