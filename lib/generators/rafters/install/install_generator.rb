@@ -9,8 +9,4 @@ class Rafters::InstallGenerator < Rails::Generators::Base
     empty_directory "app/components"
     empty_directory "spec/components" if defined?(RSpec)
   end
-
-  def add_asset_requires
-    say_status("[instructions]", "Please add //= require_components to your application.css and application.js files")
-  end
 end

@@ -17,20 +17,4 @@ class Rafters::Railtie < Rails::Railtie
     app.config.autoload_paths += Dir[app.root.join("app", "components", "*", "*/")]
     app.config.autoload_paths += Dir[app.root.join("app", "components", "*/")]
   end
-
-  config.after_initialize do |app|
-    replace_preprocessor(app, 'text/css')
-    replace_preprocessor(app, 'application/javascript')
-  end
-
-  private
-
-  def replace_preprocessor(app, type)
-    begin
-      app.assets.unregister_preprocessor(type, Sprockets::DirectiveProcessor)
-      app.assets.register_preprocessor(type, Rafters::DirectiveProcessor)
-    rescue
-      Rails.logger.warn("Could not load Sprockets::ComponentProcessor for #{type}")
-    end
-  end
 end

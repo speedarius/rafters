@@ -36,7 +36,7 @@ After you install the Rafters gem, you need to run the following generator:
 $ rails generate rafters:install
 ```
   
-This generator will create an `app/rafters` directory in your application, a `config/initializers/rafters.rb` initializer with some basic configuration, and add the `require_components` directive to your application.css and application.js files.
+This generator will create an `app/rafters` directory in your application, a `config/initializers/rafters.rb` initializer with some basic configuration.
 
 ### Creating a component
 
