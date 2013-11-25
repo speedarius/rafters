@@ -1,5 +1,3 @@
-require 'rafters/sprockets/directive_processor'
-
 class Rafters::Railtie < Rails::Railtie
   initializer "rafters.load_view_paths" do |app|
     Rafters.view_paths = Dir[app.root.join("app", "components", "*", "views")]
