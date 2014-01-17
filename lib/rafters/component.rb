@@ -39,7 +39,7 @@ class Rafters::Component
   end
 
   def view
-    @view ||= (views[options.view_name] || {}).reverse_merge({ name: options.view_name, attributes: nil })
+    @view ||= objectify((views[options.view_name] || {}).reverse_merge({ name: options.view_name }))
   end
 
   def locals
