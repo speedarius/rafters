@@ -61,7 +61,7 @@ class Rafters::Component
   end
 
   def params
-    controller(:params)
+    controller(:params) || {}
   end
 
   def execute_callbacks!(type)
