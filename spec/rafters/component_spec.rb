@@ -262,6 +262,28 @@ describe Rafters::Component do
     end
   end
 
+  describe "#template" do
+    before do
+      FooBarComponent.register_template(:foo_bar)
+      subject.local_options = { template_name: "foo_bar" }
+    end
+
+    it "returns a hash containing the template's name" do
+      expect(subject.template[:name]).to eq("foo_bar")
+    end
+
+    context "with declared attributes" do
+      before do
+        FooBarComponent.register_template(:baz, attributes: [:foo, :bar, :baz])
+        subject.local_options = { template_name: "baz" }
+      end
+
+      it "returns a hash containing the declared attributes" do
+        expect(subject.template[:attributes]).to eq([:foo, :bar, :baz])
+      end
+    end
+  end
+
   describe "#locals" do
     before do
       FooBarComponent.send(:define_method, :title, -> { "Heading Component" })
