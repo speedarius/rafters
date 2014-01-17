@@ -38,8 +38,8 @@ class Rafters::Component
     end
   end
 
-  def template
-    @template ||= (templates[options.template_name] || {}).reverse_merge({ name: options.template_name, attributes: nil })
+  def view
+    @view ||= (views[options.view_name] || {}).reverse_merge({ name: options.view_name, attributes: nil })
   end
 
   def locals
@@ -71,7 +71,7 @@ class Rafters::Component
   end
 
   class << self
-    attr_accessor :_attributes, :_settings, :_setting_options, :_options, :_before_render_callbacks, :_after_render_callbacks, :_sources, :_templates
+    attr_accessor :_attributes, :_settings, :_setting_options, :_options, :_before_render_callbacks, :_after_render_callbacks, :_sources, :_views
 
     def inherited(base)
       base.option(:wrapper, true)
@@ -118,8 +118,8 @@ class Rafters::Component
       (self._sources ||= {})[name.to_s] = klass
     end
 
-    def register_template(name, options = {})
-      (self._templates ||= {})[name.to_s] = options
+    def register_view(name, options = {})
+      (self._views ||= {})[name.to_s] = options
     end
   end
 
@@ -161,8 +161,8 @@ class Rafters::Component
     self.class._sources || {}
   end
 
-  def templates
-    self.class._templates || {}
+  def views
+    self.class._views || {}
   end
 
   def merge_chain(*links)

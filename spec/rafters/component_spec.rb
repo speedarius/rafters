@@ -262,24 +262,24 @@ describe Rafters::Component do
     end
   end
 
-  describe "#template" do
+  describe "#view" do
     before do
-      FooBarComponent.register_template(:foo_bar)
-      subject.local_options = { template_name: "foo_bar" }
+      FooBarComponent.register_view(:foo_bar)
+      subject.local_options = { view_name: "foo_bar" }
     end
 
-    it "returns a hash containing the template's name" do
-      expect(subject.template[:name]).to eq("foo_bar")
+    it "returns a hash containing the view's name" do
+      expect(subject.view[:name]).to eq("foo_bar")
     end
 
     context "with declared attributes" do
       before do
-        FooBarComponent.register_template(:baz, attributes: [:foo, :bar, :baz])
-        subject.local_options = { template_name: "baz" }
+        FooBarComponent.register_view(:baz, attributes: [:foo, :bar, :baz])
+        subject.local_options = { view_name: "baz" }
       end
 
       it "returns a hash containing the declared attributes" do
-        expect(subject.template[:attributes]).to eq([:foo, :bar, :baz])
+        expect(subject.view[:attributes]).to eq([:foo, :bar, :baz])
       end
     end
   end
