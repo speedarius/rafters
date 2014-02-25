@@ -13,7 +13,7 @@ module Rafters::Context
 
   def render_with_component(*args, &block)
     if params[:component]
-      component, options = params[:component], params[:options]
+      component, options = params[:component], params[:options].deep_dup
 
       respond_to do |format|
         format.html { render_without_component(text: render_component(component, options)) }
